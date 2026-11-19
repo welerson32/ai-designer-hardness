@@ -6,7 +6,14 @@
       "Read(./**/*.psb)",
       "Read(./assets/raw/**)",
       "Read(./exports/**)",
-      "mcp__photoshop__get_layers"
+      "mcp__photoshop__get_layers",
+      "mcp__photoshop__get_layer_image"
+    ],
+    "ask": [
+      "mcp__photoshop__get_document_image",
+      "mcp__photoshop__generate_image",
+      "mcp__photoshop__generative_fill",
+      "mcp__photoshop__harmonize_layer"
     ]
   }
 }

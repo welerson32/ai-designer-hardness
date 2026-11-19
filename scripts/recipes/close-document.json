@@ -1,0 +1,14 @@
+{
+  "description": "Fecha, sem salvar, o documento com o nome indicado (nunca o ativo por ordinal — evita fechar o original se o duplicate falhar). Usado para descartar a cópia de preview.",
+  "server": "photoshop-bp",
+  "params": { "name": "string" },
+  "commands": [
+    {
+      "_obj": "close",
+      "_target": [ { "_ref": "document", "_name": "{{name}}" } ],
+      "saving": { "_enum": "yesNo", "_value": "no" }
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

@@ -69,7 +69,15 @@ export function distribute({ start, end, sizes }) {
   return { gap: Math.round(gap * 100) / 100, positions };
 }
 
-const OPS = { center, align, 'move-to': moveTo, grid, distribute };
+export function fit({ w, h, max = 800 }) {
+  const W = num(w, 'w');
+  const H = num(h, 'h');
+  const M = num(max, 'max');
+  const k = Math.min(1, M / Math.max(W, H));
+  return { width: Math.max(1, round(W * k)), height: Math.max(1, round(H * k)), scale: Math.round(k * 10000) / 10000 };
+}
+
+const OPS = { center, align, 'move-to': moveTo, grid, distribute, fit };
 
 function parseArgs(argv) {
   const args = {};
@@ -87,6 +95,7 @@ const USAGE = `uso: node scripts/geo.mjs <op> [--chave valor]
   move-to    --bounds l,t,r,b [--x] [--y]                  -> {dx,dy}
   grid       --W --cols [--gutter] [--margin]              -> {col,xs}
   distribute --start --end --sizes s1,s2,...               -> {gap,positions}
+  fit        --w --h [--max 800]                           -> {width,height,scale} (nunca amplia)
 bounds sempre sem efeitos (boundsNoEffects). dy positivo = para baixo.`;
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

@@ -1,0 +1,17 @@
+{
+  "description": "Redimensiona o documento ativo (px). Destrutivo: usar só na cópia de preview.",
+  "server": "photoshop-bp",
+  "params": { "width": "int", "height": "int" },
+  "commands": [
+    {
+      "_obj": "imageSize",
+      "width": { "_unit": "pixelsUnit", "_value": "{{width}}" },
+      "height": { "_unit": "pixelsUnit", "_value": "{{height}}" },
+      "scaleStyles": true,
+      "constrainProportions": false,
+      "interfaceIconFrameDimmed": { "_enum": "interpolationType", "_value": "bicubicSharper" }
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

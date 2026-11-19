@@ -4,9 +4,10 @@ O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aq
 
 - **`geo.mjs`** — cálculo de layout determinístico (`center`, `align`, `move-to`, `grid`, `distribute`). `node scripts/geo.mjs` sem argumentos mostra o uso.
 - **`recipe.mjs`** — monta comandos a partir das receitas: `node scripts/recipe.mjs <receita> k=v ...` ou `--lote <arquivo>`.
+- **`preview.mjs`** — chamadas do preview barato (duplicar → recortar → ≤ 800px → capturar → fechar cópia). Uso exclusivo do `ps-art-director`.
 - **`recipes/`** — receitas batchPlay enviadas por `call_batch_play_command` (servidor `photoshop-bp`).
 
-Self-tests: `node scripts/geo.selftest.mjs` e `node scripts/recipe.selftest.mjs`.
+Self-tests: `node scripts/<nome>.selftest.mjs` (`geo`, `recipe`, `preview`).
 
 ## Formato de receita
 
@@ -39,3 +40,7 @@ Self-tests: `node scripts/geo.selftest.mjs` e `node scripts/recipe.selftest.mjs`
 | `set-visibility` | mostrar/ocultar | não |
 | `set-opacity` | opacidade | não |
 | `play-action` | executar Action | não |
+| `duplicate-document` | cópia para preview | não |
+| `crop-document` | recorte (só na cópia) | não |
+| `resize-image` | redução (só na cópia) | não |
+| `close-document` | fechar cópia por nome, sem salvar | não |

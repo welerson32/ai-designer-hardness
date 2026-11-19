@@ -8,7 +8,7 @@ hooks:
     - matcher: "mcp__photoshop-bp__call_batch_play_command"
       hooks:
         - type: command
-          command: "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/scout-readonly-guard.cjs\""
+          command: "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/batchplay-guard.cjs\" --allow get,multiGet --who ps-scout"
           timeout: 10
 ---
 

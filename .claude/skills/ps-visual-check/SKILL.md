@@ -1,14 +1,16 @@
 ---
 name: ps-visual-check
-description: Regras para capturar e avaliar imagem do documento Photoshop. Use somente quando o critério de aceite depender de ver o resultado.
+description: Decide como validar visualmente um resultado no Photoshop sem gastar visão. Use quando o critério de aceite parecer visual ou o usuário pedir para "ver" o resultado.
 ---
 
 # Validação visual
 
-Captura de imagem é a operação mais cara do harness (tokens de visão).
+Regras completas: `.claude/policies/visao.md`.
 
-- **Antes:** a pergunta pode ser respondida por metadados? Se sim, não capture.
-- **Resolução:** sempre a menor que permita julgar (ex.: lado maior ≤ 768px).
-- **Escopo:** prefira a camada/região afetada ao documento inteiro.
-- **Frequência:** uma captura ao final de um lote, não a cada operação.
-- **Comparação antes/depois:** só quando pedida.
+1. **Dá para responder por metadados?** (posição, tamanho, alinhamento, texto, visibilidade) → responda pelos números. Fim.
+2. **Não dá** → peça ao usuário para conferir no Photoshop, dizendo exatamente o quê ("o título está legível sobre a foto?").
+3. **Usuário pediu preview ou avaliação estética** → dispare `ps-art-director` com:
+   - região alvo (bounds da camada/artboard do `.ps-state.json`) e `W`,`H` do canvas;
+   - critérios objetivos do que avaliar;
+   - limites (o que pode sugerir mudar).
+4. Use o veredito em texto dele para planejar o próximo lote. A imagem não volta para cá.

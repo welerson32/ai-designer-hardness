@@ -15,7 +15,7 @@ Harness para o Claude Code trabalhar no **Photoshop** via **adb-mcp** (`mikecham
   - `ps-scout` (Haiku) — reconhecimento read-only; mantém `.ps-state.json`.
   - `ps-operator` (Haiku) — lote fechado e mecânico.
   - `ps-composer` (Sonnet) — etapa com decisão local dentro de limites.
-  - `ps-art-director` (Opus) — julgamento estético, raro. *(tópico 3)*
+  - `ps-art-director` (Opus) — julgamento estético com preview; só sob pedido do usuário.
 - Um único escritor no documento por vez.
 - Não destrutivo: camada/grupo novo em vez de editar o original (`.claude/policies/layers.md`).
 
@@ -35,6 +35,15 @@ Detalhe: `.claude/policies/execucao-lotes.md`. Resumo:
 2. **Uma etapa = um lote** (skill `ps-plan`), aplicado de uma vez, com snapshot automático. Confirmação por lote, só se houver escolha estética.
 3. Lote > ~5 comandos → `ps-operator`. Fluxo estável e repetitivo → Action (`actions/README.md`).
 
+## Visão (zero-vision default)
+
+Detalhe: `.claude/policies/visao.md`. Resumo:
+
+1. **Blind-by-default.** Valide por números. Nenhum agente captura imagem por conta própria.
+2. **O olho é o usuário:** dúvida visual → peça para ele conferir no Photoshop.
+3. **Preview só a pedido**, via `ps-art-director` (skill `ps-visual-check`): região alvo, ≤ 800px, numa cópia descartável. A imagem nunca entra no contexto do mentor.
+4. Generativo (`generate_image`, `generative_fill`, `harmonize_layer`) gasta crédito Firefly → sempre com aprovação.
+
 ## MCP
 
 - `photoshop` (`ps-mcp.py`) — tools de alto nível.
@@ -46,8 +55,8 @@ Detalhe: `.claude/policies/execucao-lotes.md`. Resumo:
 
 - `.claude/policies/` — regras detalhadas.
 - `.claude/skills/` — `ps-workflow`, `ps-plan`, `ps-visual-check`.
-- `.claude/hooks/` — guards (ex.: scout só leitura). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
-- `scripts/` — `geo.mjs`, `recipe.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
+- `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
+- `scripts/` — `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
 - `.ps-work/` — arquivos de lote (ignorado).
 - `docs/setup-adb-mcp.md` — instalação. `docs/sessions/` — notas de sessão.

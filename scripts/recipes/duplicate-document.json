@@ -1,0 +1,14 @@
+{
+  "description": "Duplica o documento ativo; a cópia vira o documento ativo. Usado só no fluxo de preview.",
+  "server": "photoshop-bp",
+  "params": { "name": "string" },
+  "commands": [
+    {
+      "_obj": "duplicate",
+      "_target": [ { "_ref": "document", "_enum": "ordinal", "_value": "targetEnum" } ],
+      "name": "{{name}}"
+    }
+  ],
+  "returns": "descriptor do duplicate",
+  "validated": false
+}

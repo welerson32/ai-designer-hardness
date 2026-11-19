@@ -1,0 +1,21 @@
+{
+  "description": "Recorta o documento ativo ao retângulo (px). Destrutivo: usar só na cópia de preview.",
+  "server": "photoshop-bp",
+  "params": { "left": "int", "top": "int", "right": "int", "bottom": "int" },
+  "commands": [
+    {
+      "_obj": "crop",
+      "to": {
+        "_obj": "rectangle",
+        "top": { "_unit": "pixelsUnit", "_value": "{{top}}" },
+        "left": { "_unit": "pixelsUnit", "_value": "{{left}}" },
+        "bottom": { "_unit": "pixelsUnit", "_value": "{{bottom}}" },
+        "right": { "_unit": "pixelsUnit", "_value": "{{right}}" }
+      },
+      "angle": { "_unit": "angleUnit", "_value": 0 },
+      "delete": true
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}
