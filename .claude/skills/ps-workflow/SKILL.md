@@ -11,4 +11,4 @@ description: Fluxo padrão para qualquer tarefa de design no Photoshop via adb-m
    - decisão é toda do mentor → skill `ps-plan` (calcula com `geo.mjs`, escreve o lote) e aplica conforme `.claude/policies/execucao-lotes.md`;
    - etapa com decisão local dentro de limites → `ps-composer` com objetivo, critério de aceite e limites.
 4. **Validar:** por metadados (`expect` do lote). `ps-visual-check` só se o critério de aceite for visual.
-5. **Fim de etapa grande:** avaliar handoff/compactação (tópico 4).
+5. **Fim de macro-etapa:** skill `ps-handoff`.

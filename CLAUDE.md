@@ -53,6 +53,14 @@ Detalhe: `.claude/policies/visao.md`. Resumo:
 3. **Preview só a pedido**, via `ps-art-director` (skill `ps-visual-check`): região alvo, ≤ 800px, numa cópia descartável. A imagem nunca entra no contexto do mentor.
 4. Generativo (`generate_image`, `generative_fill`, `harmonize_layer`) gasta crédito Firefly → sempre com aprovação.
 
+## Sessão
+
+Detalhe: `.claude/policies/sessao.md`. Resumo:
+
+1. **Fim de macro-etapa** → skill `ps-handoff` (grava `.ps-work/handoff.md`) e sugira ao usuário compactar, com a frase pronta para copiar.
+2. **Retomada é automática:** o hook `SessionStart` injeta handoff + estado + perfil. Confirme com o usuário se o documento aberto é o mesmo.
+3. Reconhecimento sempre em subagente Haiku (`ps-scout`); paralelo só para leitura.
+
 ## MCP
 
 - `photoshop` (`ps-mcp.py`) — tools de alto nível.
@@ -62,9 +70,9 @@ Detalhe: `.claude/policies/visao.md`. Resumo:
 
 ## Mapa
 
-- `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `layers`).
-- `.claude/skills/` — `ps-workflow`, `ps-plan`, `ps-visual-check`.
-- `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
+- `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
+- `.claude/skills/` — `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
+- `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
 - `scripts/` — `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
 - `.ps-work/` — arquivos de lote (ignorado).
