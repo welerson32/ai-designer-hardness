@@ -1,11 +1,29 @@
-# Setup do adb-mcp
+# Instalação (técnica)
 
-Referência: https://github.com/mikechambers/adb-mcp
+O designer **não** precisa ler isto: ao abrir o Claude Code na pasta do projeto, o hook de checagem roda e a skill `ps-setup` instala ou repara tudo, guiando só o que exige clique (Photoshop, plugin, conexão).
 
-1. Clonar o adb-mcp e definir a variável de ambiente `ADB_MCP_DIR` com o caminho do clone (usada pelo `.mcp.json`).
-2. Instalar e carregar o plugin UXP do Photoshop (`uxp/ps`, via UXP Developer Tool).
-3. Subir o proxy local: `cd $ADB_MCP_DIR/adb-proxy-socket && npm install && node proxy.js` (porta 3001).
-4. No plugin, clicar em **Connect**.
-5. No Claude Code, `/mcp` deve listar `photoshop` e `photoshop-bp`.
-6. Self-tests: `node .claude/hooks/<batchplay-guard|session-handoff>.selftest.cjs` e `node scripts/<geo|recipe|preview>.selftest.mjs`.
-7. Ao aprovar `get_document_image` e tools generativas, **não** escolha "sempre permitir" — o pedido de aprovação é o controle de custo.
+## O que é instalado
+
+| Item | Onde | Como |
+|---|---|---|
+| Node LTS | sistema | `winget` (se faltar) |
+| uv (traz o Python) | usuário | `winget` ou instalador oficial |
+| adb-mcp no commit do lock | `vendor/adb-mcp` (ignorado pelo git) | `git clone` + `checkout` |
+| Ambiente Python do MCP | `vendor/adb-mcp/mcp/.venv` | `uv sync --no-install-project` |
+| Dependências do proxy | `vendor/adb-mcp/adb-proxy-socket/node_modules` | `npm install` |
+| Proxy (porta 3001) | processo em segundo plano | iniciado pelo hook a cada sessão; log em `vendor/proxy.log` |
+| Plugin do Photoshop | Creative Cloud | `setup/plugin/photoshop-mcp-agent.ccx` |
+
+## Comandos
+
+- Diagnóstico: `node scripts/setup/doctor.mjs` (`--rapido` pula o teste de conexão).
+- Instalar/reparar: `node scripts/setup/install.mjs tudo` ou passos (`uv`, `vendor`, `python`, `proxy-deps`, `workspace`, `proxy`, `plugin`).
+- Self-tests: `node .claude/hooks/<batchplay-guard|session-handoff>.selftest.cjs` e `node scripts/<cliente|pauta|geo|recipe|preview>.selftest.mjs`.
+
+## Requisitos
+
+- Windows 10/11 com Git (já exigido pelo Claude Code).
+- Photoshop 2025 (v26) ou mais novo.
+- Abrir o Claude Code **na raiz do projeto** (o `.mcp.json` usa caminho relativo para `vendor/`).
+
+Manutenção (versão do adb-mcp, pacote do plugin): `docs/manutencao.md`.

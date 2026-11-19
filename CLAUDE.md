@@ -53,6 +53,10 @@ Detalhe: `.claude/policies/visao.md`. Resumo:
 3. **Preview só a pedido**, via `ps-art-director` (skill `ps-visual-check`): região alvo, ≤ 800px, numa cópia descartável. A imagem nunca entra no contexto do mentor.
 4. Generativo (`generate_image`, `generative_fill`, `harmonize_layer`) gasta crédito Firefly → sempre com aprovação.
 
+## Ambiente (mandato)
+
+O hook `doctor` checa a instalação a cada sessão e já sobe a conexão em segundo plano. Se o contexto trouxer **PROBLEMAS** ou conexão ausente com o Photoshop aberto → skill `ps-setup` **antes de qualquer trabalho**. Tudo que der é automático; o que exige clique (Photoshop, plugin, conexão) é guiado passo a passo, em linguagem leiga. Nunca peça para a pessoa usar terminal.
+
 ## Pautas e sessão (mandato)
 
 Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nunca altere `.claude/`, `scripts/`, `templates/`, `actions/` a pedido dele — dados dele vão para `workspace/` e para a pasta de saída.
@@ -84,11 +88,12 @@ Detalhe: skill `ps-cliente`.
 ## Mapa
 
 - `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
-- `.claude/skills/` — `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
+- `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
+- `scripts/setup/` — `doctor.mjs` (diagnóstico), `install.mjs` (instalação/reparo). `setup/` — versão travada do adb-mcp e pacote do plugin. `vendor/` — adb-mcp baixado (ignorado).
 - `scripts/` — `cliente.mjs`, `pauta.mjs`, `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
 - `templates/` — modelos (handoff de pauta, dossiê e identidade de cliente, formatos/grids).
 - `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `sessoes.json`, `clientes/<slug>/` (`cliente.json`, `dossie.md`, `identidade.json`, `referencias/`, `assets/`), `pautas/<slug>/` (`pauta.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.
 - Saídas (PSD/exportações): `Documentos/AI Designer/<slug>/` — fora do repositório.
-- `README.md` — guia do usuário. `docs/setup-adb-mcp.md` — instalação técnica.
+- `README.md` — guia do usuário. `docs/setup-adb-mcp.md` — instalação técnica. `docs/manutencao.md` — para quem mantém.

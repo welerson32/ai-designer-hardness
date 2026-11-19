@@ -29,6 +29,16 @@
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if command -v node >/dev/null 2>&1; then node \"${CLAUDE_PROJECT_DIR}/scripts/setup/doctor.mjs\" --hook; else echo '# Checagem do ambiente: Node ausente. Acione a skill ps-setup (instalar Node) antes de qualquer trabalho.'; fi",
+            "timeout": 45
+          }
+        ]
+      },
+      {
         "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
