@@ -9,7 +9,7 @@ Público leigo em tecnologia: **faça tudo o que der sozinho**; guie só o que e
 
 ## 1. Diagnóstico
 
-`node scripts/setup/doctor.mjs` → `itens` com `id`, `ok`, `tipo` (`auto` | `guiado` | `manutencao`).
+`node scripts/setup/doctor.mjs` → `itens` com `id`, `ok`, `tipo` (`auto` | `guiado`).
 
 ## 2. Reparo automático (`tipo: auto`)
 
