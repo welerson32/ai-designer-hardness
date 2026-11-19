@@ -16,24 +16,51 @@ const num = (v, name) => {
   return n;
 };
 
-export function center({ W, H, bounds, axis = 'both' }) {
+function area({ W, H, frame }) {
+  if (frame !== undefined) {
+    const f = parseBounds(frame);
+    return { x0: f.left, y0: f.top, x1: f.right, y1: f.bottom };
+  }
+  return { x0: 0, y0: 0, x1: num(W, 'W'), y1: num(H, 'H') };
+}
+
+export function center({ W, H, frame, bounds, axis = 'both' }) {
   const b = parseBounds(bounds);
+  const a = area({ W, H, frame });
   const out = { dx: 0, dy: 0 };
-  if (axis !== 'y') out.dx = round((num(W, 'W') - b.w) / 2 - b.left);
-  if (axis !== 'x') out.dy = round((num(H, 'H') - b.h) / 2 - b.top);
+  if (axis !== 'y') out.dx = round(a.x0 + (a.x1 - a.x0 - b.w) / 2 - b.left);
+  if (axis !== 'x') out.dy = round(a.y0 + (a.y1 - a.y0 - b.h) / 2 - b.top);
   return out;
 }
 
-export function align({ W, H, bounds, edge, margin = 0 }) {
+export function align({ W, H, frame, bounds, edge, margin = 0 }) {
   const b = parseBounds(bounds);
+  const a = area({ W, H, frame });
   const m = num(margin, 'margin');
   switch (edge) {
-    case 'left': return { dx: round(m - b.left), dy: 0 };
-    case 'right': return { dx: round(num(W, 'W') - m - b.right), dy: 0 };
-    case 'top': return { dx: 0, dy: round(m - b.top) };
-    case 'bottom': return { dx: 0, dy: round(num(H, 'H') - m - b.bottom) };
+    case 'left': return { dx: round(a.x0 + m - b.left), dy: 0 };
+    case 'right': return { dx: round(a.x1 - m - b.right), dy: 0 };
+    case 'top': return { dx: 0, dy: round(a.y0 + m - b.top) };
+    case 'bottom': return { dx: 0, dy: round(a.y1 - m - b.bottom) };
     default: throw new Error('--edge deve ser left|right|top|bottom');
   }
+}
+
+export function carrossel({ W, H, folhas, margem = 0 }) {
+  const w = num(W, 'W');
+  const h = num(H, 'H');
+  const n = num(folhas, 'folhas');
+  const m = num(margem, 'margem');
+  if (n < 2 || !Number.isInteger(n)) throw new Error('--folhas deve ser inteiro >= 2');
+  return {
+    prancheta: { W: w * n, H: h },
+    folhas: Array.from({ length: n }, (_, i) => ({
+      n: i + 1,
+      frame: `${i * w},0,${(i + 1) * w},${h}`,
+      conteudo: `${i * w + m},${m},${(i + 1) * w - m},${h - m}`,
+    })),
+    guias: Array.from({ length: n - 1 }, (_, i) => (i + 1) * w),
+  };
 }
 
 export function moveTo({ bounds, x, y }) {
@@ -77,7 +104,7 @@ export function fit({ w, h, max = 800 }) {
   return { width: Math.max(1, round(W * k)), height: Math.max(1, round(H * k)), scale: Math.round(k * 10000) / 10000 };
 }
 
-const OPS = { center, align, 'move-to': moveTo, grid, distribute, fit };
+const OPS = { center, align, 'move-to': moveTo, grid, distribute, fit, carrossel };
 
 function parseArgs(argv) {
   const args = {};
@@ -90,8 +117,10 @@ function parseArgs(argv) {
 }
 
 const USAGE = `uso: node scripts/geo.mjs <op> [--chave valor]
-  center     --W --H --bounds l,t,r,b [--axis x|y|both]   -> {dx,dy}
-  align      --W --H --bounds l,t,r,b --edge left|right|top|bottom [--margin]   -> {dx,dy}
+  center     (--W --H | --frame l,t,r,b) --bounds l,t,r,b [--axis x|y|both]   -> {dx,dy}
+  align      (--W --H | --frame l,t,r,b) --bounds l,t,r,b --edge left|right|top|bottom [--margin]   -> {dx,dy}
+  carrossel  --W --H --folhas N [--margem]                 -> {prancheta,folhas[{n,frame,conteudo}],guias}
+             (W,H = tamanho de UMA folha; --frame da folha no center/align posiciona dentro dela)
   move-to    --bounds l,t,r,b [--x] [--y]                  -> {dx,dy}
   grid       --W --cols [--gutter] [--margin]              -> {col,xs}
   distribute --start --end --sizes s1,s2,...               -> {gap,positions}

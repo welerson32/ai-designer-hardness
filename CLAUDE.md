@@ -73,6 +73,13 @@ Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nun
 5. PSD e exportações **só** na pasta de saída da pauta (`Documentos/AI Designer/<slug>/`), nunca no repositório.
 6. Reconhecimento sempre em subagente Haiku (`ps-scout`); paralelo só para leitura.
 
+## Peças (mandato)
+
+Detalhe: `.claude/policies/pecas.md`.
+
+1. A pauta chega com **textos do post** e **características esperadas** → registre no Briefing do handoff, textos **literais**.
+2. **Carrossel = um único PSD com uma única prancheta**, folhas lado a lado (`geo.mjs carrossel`). Nunca um arquivo ou uma prancheta por folha.
+
 ## Clientes (mandato)
 
 Detalhe: skill `ps-cliente`.
@@ -93,7 +100,7 @@ Detalhe: skill `ps-cliente`.
 ## Mapa
 
 - `.claude/output-styles/designer.md` — estilo de resposta do projeto (ativo via `outputStyle` no settings).
-- `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
+- `.claude/policies/` — regras detalhadas (`comunicacao`, `pecas`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
 - `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
 - `scripts/setup/` — `doctor.mjs` (diagnóstico), `install.mjs` (instalação/reparo). `setup/` — versão travada do adb-mcp e pacote do plugin (gerado pelo UXP Developer Tool). `vendor/` — adb-mcp baixado (ignorado).

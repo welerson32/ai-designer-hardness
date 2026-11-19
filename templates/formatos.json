@@ -3,6 +3,8 @@
   "formatos": {
     "instagram-feed-retrato": { "W": 1080, "H": 1350, "margem": 60, "colunas": 6, "gutter": 24 },
     "instagram-feed-quadrado": { "W": 1080, "H": 1080, "margem": 60, "colunas": 6, "gutter": 24 },
+    "instagram-carrossel-retrato": { "W": 1080, "H": 1350, "margem": 60, "colunas": 6, "gutter": 24, "carrossel": true, "nota": "W/H por folha; prancheta única = W × folhas (geo.mjs carrossel)" },
+    "instagram-carrossel-quadrado": { "W": 1080, "H": 1080, "margem": 60, "colunas": 6, "gutter": 24, "carrossel": true, "nota": "W/H por folha; prancheta única = W × folhas (geo.mjs carrossel)" },
     "instagram-story": { "W": 1080, "H": 1920, "margem": 60, "colunas": 6, "gutter": 24, "zonaSegura": { "topo": 250, "base": 340 } },
     "linkedin-post": { "W": 1200, "H": 1200, "margem": 64, "colunas": 6, "gutter": 24 },
     "linkedin-link": { "W": 1200, "H": 627, "margem": 48, "colunas": 12, "gutter": 16 },
