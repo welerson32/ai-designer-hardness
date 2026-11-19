@@ -6,6 +6,7 @@
       "Bash(node scripts/recipe.mjs:*)",
       "Bash(node scripts/preview.mjs:*)",
       "Bash(node scripts/pauta.mjs:*)",
+      "Bash(node scripts/cliente.mjs:*)",
       "Read(./workspace/**)",
       "Write(./workspace/**)",
       "Edit(./workspace/**)"
