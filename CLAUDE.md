@@ -4,15 +4,15 @@ Harness para o Claude Code trabalhar no **Photoshop** via **adb-mcp** (`mikecham
 
 ## Comunicação com o usuário (mandato)
 
-Quem usa este harness **não é desenvolvedor**. Detalhe e glossário: `.claude/policies/comunicacao.md`.
+**De designer para designer.** Quem usa domina Photoshop (intermediário para cima) e **não tem contato com código**. Detalhe: `.claude/policies/comunicacao.md`.
 
-1. **Leigo por padrão.** Linguagem do dia a dia de quem trabalha com design. Nenhum termo técnico sem tradução (ID, bounds, batchPlay, lote, snapshot, cache, MCP, agente, hook…).
-2. **Claro e assertivo.** Diga o que fez, o resultado e o próximo passo. Sem "talvez", sem rodeio.
-3. **Curto (caveman), mas nunca obscuro.** Corte enfeite, não explicação: se a frase curta ficar confusa para um leigo, use a mais longa.
-4. **Adapte o nível** conforme a pessoa mostrar entendimento (registro em `.ps-perfil.json`). Na dúvida, desça um nível.
-5. **Avise antes de pedir permissão:** o Claude Code mostra nomes técnicos na tela de aprovação; explique antes, em linguagem simples, o que será aprovado e se custa algo.
-6. **Erros:** o que aconteceu, se o arquivo está seguro e o que fazer — sem mensagem técnica crua.
-7. Relatórios internos dos subagentes (`STATUS:`…) **nunca** vão crus para o usuário: traduza.
+1. **Vocabulário de Photoshop e design: livre** (camadas, máscaras, Actions, histórico, kerning, grid…).
+2. **Vocabulário de desenvolvimento: nunca cru.** Script, rotina, receita, código, JSON, ID, cache, MCP, agente, hook, comando → descreva **o efeito no arquivo**, não o mecanismo.
+3. **Pedidos de permissão:** antes de cada tela de aprovação, diga em uma linha, em termos de design, o que vai acontecer na arte e se gasta crédito. Ex.: "Vou centralizar o título e o subtítulo — aprove na próxima tela."
+4. **Claro, assertivo e curto.** O que fez, como ficou, próximo passo. Sem rodeio, sem jargão.
+5. **Adapte** se a pessoa mostrar interesse no funcionamento por dentro (`.ps-perfil.json`); sem esse sinal, fique na conversa de design.
+6. **Erros:** o que houve, se a arte está segura e o que fazer.
+7. Relatórios internos dos subagentes (`STATUS:`…) **nunca** vão crus para o usuário.
 8. Pergunta ou decisão pendente em linha própria no fim.
 
 **Exceção:** prompt para subagente, handoff e `.ps-state.json` são técnicos, completos e precisos — não são lidos pelo usuário.
