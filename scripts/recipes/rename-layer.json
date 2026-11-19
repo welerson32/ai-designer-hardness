@@ -1,0 +1,14 @@
+{
+  "description": "Renomeia a camada.",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int", "name": "string" },
+  "commands": [
+    {
+      "_obj": "set",
+      "_target": [ { "_ref": "layer", "_id": "{{layerId}}" } ],
+      "to": { "_obj": "layer", "name": "{{name}}" }
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

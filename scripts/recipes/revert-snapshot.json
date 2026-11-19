@@ -1,0 +1,13 @@
+{
+  "description": "Volta o documento ao snapshot indicado (rollback de lote).",
+  "server": "photoshop-bp",
+  "params": { "name": "string" },
+  "commands": [
+    {
+      "_obj": "select",
+      "_target": [ { "_ref": "snapshotClass", "_name": "{{name}}" } ]
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

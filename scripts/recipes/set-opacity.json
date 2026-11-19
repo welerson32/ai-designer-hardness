@@ -1,0 +1,14 @@
+{
+  "description": "Define a opacidade da camada (0-100).",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int", "opacity": "int" },
+  "commands": [
+    {
+      "_obj": "set",
+      "_target": [ { "_ref": "layer", "_id": "{{layerId}}" } ],
+      "to": { "_obj": "layer", "opacity": { "_unit": "percentUnit", "_value": "{{opacity}}" } }
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

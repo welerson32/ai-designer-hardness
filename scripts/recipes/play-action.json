@@ -1,0 +1,16 @@
+{
+  "description": "Executa uma Action do Photoshop (registro em actions/README.md).",
+  "server": "photoshop-bp",
+  "params": { "set": "string", "action": "string" },
+  "commands": [
+    {
+      "_obj": "play",
+      "_target": [
+        { "_ref": "action", "_name": "{{action}}" },
+        { "_ref": "actionSet", "_name": "{{set}}" }
+      ]
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

@@ -5,11 +5,10 @@ description: Fluxo padrão para qualquer tarefa de design no Photoshop via adb-m
 
 # Fluxo de tarefa no Photoshop
 
-1. **Estado:** leia `.ps-state.json`. Faltou ID, bounds ou canvas → peça ao `ps-scout` só o que falta (nome exato, tipo ou seleção ativa).
-2. **Calcular:** posições e deslocamentos por fórmula (`.claude/policies/leitura-estado.md` §3). Nada de tentativa e erro no documento.
-3. **Planejar:** lista numerada de operações (camada alvo, ação, parâmetros já calculados). Confirme com o usuário só se houver escolha estética.
-4. **Executar:**
-   - ≤ 2 operações → execute direto.
-   - 3+ operações mecânicas → `ps-operator` com a lista.
-5. **Atualizar cache:** escrita previsível → recalcule bounds e grave no `.ps-state.json`; imprevisível → `bounds: null`.
-6. **Validar:** por metadados. `ps-visual-check` só se o critério de aceite for visual.
+1. **Estado:** leia `.ps-state.json`. Faltou ID, bounds ou canvas → `ps-scout`, só o que falta (nome exato, tipo ou seleção ativa).
+2. **Etapas:** quebre a tarefa em etapas (ex.: layout → tipografia → acabamento). Uma etapa = um lote.
+3. **Por etapa, escolha o executor:**
+   - decisão é toda do mentor → skill `ps-plan` (calcula com `geo.mjs`, escreve o lote) e aplica conforme `.claude/policies/execucao-lotes.md`;
+   - etapa com decisão local dentro de limites → `ps-composer` com objetivo, critério de aceite e limites.
+4. **Validar:** por metadados (`expect` do lote). `ps-visual-check` só se o critério de aceite for visual.
+5. **Fim de etapa grande:** avaliar handoff/compactação (tópico 4).

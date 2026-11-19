@@ -1,0 +1,23 @@
+{
+  "description": "Desloca a camada em pixels (dx, dy). dy positivo = para baixo (coordenadas do Photoshop). Seleciona a camada antes de mover.",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int", "dx": "int", "dy": "int" },
+  "commands": [
+    {
+      "_obj": "select",
+      "_target": [ { "_ref": "layer", "_id": "{{layerId}}" } ],
+      "makeVisible": false
+    },
+    {
+      "_obj": "move",
+      "_target": [ { "_ref": "layer", "_enum": "ordinal", "_value": "targetEnum" } ],
+      "to": {
+        "_obj": "offset",
+        "horizontal": { "_unit": "pixelsUnit", "_value": "{{dx}}" },
+        "vertical": { "_unit": "pixelsUnit", "_value": "{{dy}}" }
+      }
+    }
+  ],
+  "returns": "descriptor do move (só o 1º comando é devolvido pelo MCP)",
+  "validated": false
+}

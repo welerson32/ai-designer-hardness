@@ -1,0 +1,13 @@
+{
+  "description": "Mostra ou oculta a camada. action = show | hide.",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int", "action": "show|hide" },
+  "commands": [
+    {
+      "_obj": "{{action}}",
+      "null": [ { "_ref": "layer", "_id": "{{layerId}}" } ]
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}
