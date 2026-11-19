@@ -1,0 +1,17 @@
+{
+  "description": "Estilo de texto de uma camada de texto (conteúdo, fonte, tamanho, cor, entrelinha, tracking). Usado no estudo do arquivo guia de cliente.",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int" },
+  "commands": [
+    {
+      "_obj": "get",
+      "_target": [
+        { "_property": "textKey" },
+        { "_ref": "layer", "_id": "{{layerId}}" }
+      ]
+    }
+  ],
+  "returns": "{ textKey: { textKey: <texto>, textStyleRange: [ { textStyle: { fontPostScriptName, size, color, leading, tracking } } ], paragraphStyleRange: [...] } }",
+  "notes": "size vem em pt e pode precisar de ajuste pelo transform da camada (textKey.transform). Registrar só o necessário no dossiê.",
+  "validated": false
+}

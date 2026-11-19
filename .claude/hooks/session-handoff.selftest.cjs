@@ -34,6 +34,15 @@ try {
   });
   write('workspace/perfil.json', { bastidores: true });
   out = build(root, { session_id: 's1' });
+  assert.match(out, /Cliente: acme — SEM CADASTRO/);
+  write('workspace/clientes/acme/cliente.json', { slug: 'acme', status: 'pronto' });
+  write('workspace/clientes/acme/dossie.md', '# Dossiê — Acme\n- Tom: direto');
+  out = build(root, { session_id: 's1' });
+  assert.match(out, /## Dossiê do cliente \(acme\)\n# Dossiê — Acme/);
+  write('workspace/clientes/acme/cliente.json', { slug: 'acme', status: 'em-cadastro' });
+  assert.match(build(root, { session_id: 's1' }), /cadastro incompleto/);
+  write('workspace/clientes/acme/cliente.json', { slug: 'acme', status: 'pronto' });
+  out = build(root, { session_id: 's1' });
   assert.match(out, /Pauta desta sessão: Post \(2026-11-19-post\)/);
   assert.match(out, /Próxima etapa: tipografia/);
   assert.match(out, /id=12 "titulo" text bounds=1,2,3,4/);

@@ -4,6 +4,7 @@ const path = require('node:path');
 const MAX_LAYERS = 40;
 const MAX_HANDOFF_CHARS = 4000;
 const MAX_PAUTAS = 15;
+const MAX_DOSSIE_CHARS = 9000;
 
 function readJson(file) {
   try {
@@ -66,6 +67,18 @@ function build(root, input = {}) {
     if (handoff) {
       if (handoff.length > MAX_HANDOFF_CHARS) handoff = handoff.slice(0, MAX_HANDOFF_CHARS) + '\n[...cortado]';
       parts.push('## Handoff\n' + handoff.trim());
+    }
+    if (meta.cliente) {
+      const cdir = path.join(ws, 'clientes', meta.cliente);
+      const cmeta = readJson(path.join(cdir, 'cliente.json'));
+      let dossie = readText(path.join(cdir, 'dossie.md'));
+      if (!cmeta) {
+        parts.push(`## Cliente: ${meta.cliente} — SEM CADASTRO\nOfereça o cadastro (skill ps-cliente, em sessão própria) antes de trabalhar.`);
+      } else if (dossie) {
+        if (dossie.length > MAX_DOSSIE_CHARS) dossie = dossie.slice(0, MAX_DOSSIE_CHARS) + '\n[...cortado — enxugar o dossiê]';
+        const aviso = cmeta.status === 'pronto' ? '' : ` — status ${cmeta.status}: cadastro incompleto, ofereça concluir (skill ps-cliente)`;
+        parts.push(`## Dossiê do cliente (${meta.cliente})${aviso}\n` + dossie.trim());
+      }
     }
     const state = summarizeState(readJson(path.join(dir, 'estado.json')));
     if (state) parts.push('## Estado em cache\n' + state);

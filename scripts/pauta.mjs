@@ -74,7 +74,10 @@ export function nova({ nome, cliente = '', sessao, root = ROOT, saidaBase = docu
     .replaceAll('{{saida}}', saida));
 
   if (sessao) vincular({ slug, sessao, root });
-  return { slug, pasta, saida };
+  const clienteStatus = clienteSlug
+    ? readJson(join(p.clientes, clienteSlug, 'cliente.json'), { status: 'inexistente' }).status
+    : 'sem-cliente';
+  return { slug, pasta, saida, cliente: clienteSlug, clienteStatus };
 }
 
 export function listar({ todas = false, root = ROOT } = {}) {

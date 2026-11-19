@@ -7,7 +7,7 @@ Saída: {{saida}}
 (o que a arte precisa entregar: peça, formato, canal, prazo)
 
 ## Decisões de design (fixas)
-- Identidade: (paleta, fontes, logo — de `workspace/clientes/<cliente>/` quando houver)
+- Identidade: dossiê do cliente (`workspace/clientes/{{cliente}}/dossie.md`) — anotar aqui só o que esta pauta muda ou especifica
 - Formato / grid / margens: (ver `templates/formatos.json`)
 
 ## Concluído

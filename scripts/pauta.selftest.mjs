@@ -16,6 +16,7 @@ try {
 
   const a = nova({ nome: 'Post Black Friday', cliente: 'Padaria São João', root, saidaBase, data: '2026-11-19' });
   assert.strictEqual(a.slug, '2026-11-19-post-black-friday');
+  assert.strictEqual(a.clienteStatus, 'inexistente');
   assert.ok(existsSync(join(a.pasta, 'etapas')));
   assert.ok(existsSync(a.saida));
   const handoff = readFileSync(join(a.pasta, 'handoff.md'), 'utf8');
@@ -25,6 +26,7 @@ try {
 
   const b = nova({ nome: 'Post Black Friday', root, saidaBase, data: '2026-11-19', sessao: 'sess-1' });
   assert.strictEqual(b.slug, '2026-11-19-post-black-friday-2');
+  assert.strictEqual(b.clienteStatus, 'sem-cliente');
   assert.deepStrictEqual(JSON.parse(readFileSync(join(root, 'workspace', 'sessoes.json'), 'utf8')), { 'sess-1': b.slug });
 
   vincular({ slug: a.slug, sessao: 'sess-2', root });

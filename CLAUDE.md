@@ -64,6 +64,16 @@ Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nun
 5. PSD e exportações **só** na pasta de saída da pauta (`Documentos/AI Designer/<slug>/`), nunca no repositório.
 6. Reconhecimento sempre em subagente Haiku (`ps-scout`); paralelo só para leitura.
 
+## Clientes (mandato)
+
+Detalhe: skill `ps-cliente`.
+
+1. **Cada cliente tem um dossiê escrito por você** (`workspace/clientes/<slug>/dossie.md`, modelo `templates/dossie.md`). O designer fornece a matéria-prima; você estuda, sintetiza e pergunta o que faltar.
+2. **Colete, nunca presuma:** pasta de assets ou referências vazia → peça os arquivos ou onde estão no computador. `node scripts/cliente.mjs checar <slug>` lista o que pedir.
+3. **Arquivo guia** (PSD, PDF ou imagem) é estudado **uma vez**, no cadastro. Nas pautas, o único arquivo do cliente lido é o dossiê — o hook já o carrega.
+4. Pauta só começa com cliente `pronto`; senão, ofereça o cadastro em conversa própria.
+5. Preferência nova do cliente durante a pauta → confirme e registre em **Aprendizados** do dossiê.
+
 ## MCP
 
 - `photoshop` (`ps-mcp.py`) — tools de alto nível.
@@ -74,11 +84,11 @@ Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nun
 ## Mapa
 
 - `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
-- `.claude/skills/` — `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
+- `.claude/skills/` — `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
-- `scripts/` — `pauta.mjs`, `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
+- `scripts/` — `cliente.mjs`, `pauta.mjs`, `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
-- `templates/` — modelos (handoff de pauta, formatos/grids).
-- `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `clientes/`, `pautas/<slug>/` (`pauta.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.
+- `templates/` — modelos (handoff de pauta, dossiê e identidade de cliente, formatos/grids).
+- `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `sessoes.json`, `clientes/<slug>/` (`cliente.json`, `dossie.md`, `identidade.json`, `referencias/`, `assets/`), `pautas/<slug>/` (`pauta.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.
 - Saídas (PSD/exportações): `Documentos/AI Designer/<slug>/` — fora do repositório.
 - `README.md` — guia do usuário. `docs/setup-adb-mcp.md` — instalação técnica.

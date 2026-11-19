@@ -11,8 +11,9 @@ Uma pauta = uma demanda de design = um handoff = **uma sessão**. O ID da sessã
 
 1. Pergunte, em linguagem de designer, o nome da pauta e o cliente (se houver).
 2. `node scripts/pauta.mjs nova --nome "<nome>" [--cliente "<cliente>"] --sessao <ID desta sessão>`
-3. Preencha em `workspace/pautas/<slug>/handoff.md` o **Objetivo** e as **Decisões de design** que o usuário já passou (formato base em `templates/formatos.json`; identidade em `workspace/clientes/<cliente>/` quando existir).
-4. Diga ao usuário onde vão ficar os arquivos: "Os PSDs e exportações desta pauta vão para Documentos › AI Designer › <slug>."
+3. Veja `clienteStatus` na saída: `inexistente` ou `em-cadastro` → explique que o cliente precisa ser cadastrado primeiro (skill `ps-cliente`, em conversa própria) e pergunte se quer fazer isso antes; `pronto` → siga.
+4. Preencha em `workspace/pautas/<slug>/handoff.md` o **Objetivo** e as **Decisões de design** que o usuário já passou (formato base em `templates/formatos.json`; identidade = dossiê do cliente, que o hook já carrega).
+5. Diga ao usuário onde vão ficar os arquivos: "Os PSDs e exportações desta pauta vão para Documentos › AI Designer › <slug>."
 
 ## Retomar existente
 
