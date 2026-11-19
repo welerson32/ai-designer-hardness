@@ -2,11 +2,11 @@
   "mcpServers": {
     "photoshop": {
       "command": "uv",
-      "args": ["run", "--directory", "vendor/adb-mcp/mcp", "--no-sync", "ps-mcp.py"]
+      "args": ["run", "--directory", "vendor/adb-mcp/mcp", "--no-sync", "mcp", "run", "ps-mcp.py"]
     },
     "photoshop-bp": {
       "command": "uv",
-      "args": ["run", "--directory", "vendor/adb-mcp/mcp", "--no-sync", "ps-batch-play.py"]
+      "args": ["run", "--directory", "vendor/adb-mcp/mcp", "--no-sync", "mcp", "run", "ps-batch-play.py"]
     }
   }
 }
