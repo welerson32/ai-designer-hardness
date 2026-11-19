@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "photoshop": {
+      "command": "uv",
+      "args": ["--directory", "<CAMINHO_ADB_MCP>/mcp", "run", "ps-mcp.py"]
+    }
+  }
+}

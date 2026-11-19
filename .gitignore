@@ -1,0 +1,7 @@
+.mcp.json
+.claude/settings.local.json
+*.psd
+*.psb
+assets/raw/
+exports/
+.env
