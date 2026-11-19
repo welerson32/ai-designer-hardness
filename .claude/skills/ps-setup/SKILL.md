@@ -17,6 +17,10 @@ Público leigo em tecnologia: **faça tudo o que der sozinho**; guie só o que e
 - `node scripts/setup/install.mjs tudo` (ou só os passos que falharam, na ordem: `uv`, `vendor`, `python`, `proxy-deps`, `plugin-pasta`, `workspace`, `proxy`).
 - **Node ausente** (o hook avisou que não conseguiu rodar): `winget install --id OpenJS.NodeJS.LTS -e --silent --accept-source-agreements --accept-package-agreements`, depois peça para a pessoa **fechar e abrir o Claude Code** e siga.
 - `uv` recém-instalado pode não estar no PATH da sessão — o script já procura nos locais padrão; se falhar, peça para reabrir o Claude Code.
+- **`mcp-photoshop` / `mcp-photoshop-bp` falhando** (a conexão do Claude com o Photoshop não sobe):
+  - "não encontrado no PATH" → peça para fechar e abrir o Claude Code.
+  - "encerrou antes de responder" ou "sem resposta" → rode o passo `python` de novo; persistindo, mostre o trecho de erro a quem mantém o projeto.
+- **Depois de qualquer reparo que deixe os itens `mcp-*` OK**, a conversa atual ainda não enxerga o Photoshop. Diga: "Pronto. Digite `/mcp`, escolha **photoshop** e clique em reconectar (faça o mesmo com **photoshop-bp**). Se preferir, feche e abra o Claude Code."
 - Rode o diagnóstico de novo. Passo que continuar falhando → explique em uma linha o que não deu certo e o que fazer; não insista em loop.
 
 ## 3. Etapas guiadas (`tipo: guiado`) — uma por vez, conferindo no fim de cada uma

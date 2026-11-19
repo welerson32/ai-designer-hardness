@@ -78,5 +78,16 @@ export function sondarPlugin(uv) {
   const out = run(uv, ['run', '--directory', MCP_DIR, '--no-sync', 'python', join(ROOT, 'scripts', 'setup', 'probe_ps.py')], { timeout: 25000 });
   if (!out) return 'ERRO';
   const last = out.split(/\r?\n/).pop();
-  return last.startsWith('OK') ? 'OK' : last.startsWith('SEM_PLUGIN') ? 'SEM_PLUGIN' : 'ERRO';
+  return ['OK', 'SEM_PLUGIN', 'SEM_PROXY'].find((k) => last.startsWith(k)) ?? 'ERRO';
+}
+
+export const PY_MODULOS = ['mcp', 'socketio', 'numpy', 'PIL', 'fontTools', 'requests', 'websocket'];
+
+export function pythonPronto() {
+  const py = join(MCP_DIR, '.venv', 'Scripts', 'python.exe');
+  if (!existsSync(py)) return { ok: false, msg: 'ambiente Python do adb-mcp não criado' };
+  const out = run(py, ['-c', `import ${PY_MODULOS.join(', ')}; print('ok')`], { timeout: 30000 });
+  return out === 'ok'
+    ? { ok: true, msg: 'ambiente Python do adb-mcp com todas as bibliotecas' }
+    : { ok: false, msg: 'ambiente Python incompleto (instalação parou no meio)' };
 }

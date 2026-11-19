@@ -1,8 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "outputStyle": "Designer",
+  "enabledMcpjsonServers": ["photoshop", "photoshop-bp"],
   "permissions": {
     "allow": [
+      "mcp__photoshop",
+      "mcp__photoshop-bp",
       "Bash(node scripts/geo.mjs:*)",
       "Bash(node scripts/recipe.mjs:*)",
       "Bash(node scripts/preview.mjs:*)",
@@ -26,7 +29,8 @@
       "mcp__photoshop__get_document_image",
       "mcp__photoshop__generate_image",
       "mcp__photoshop__generative_fill",
-      "mcp__photoshop__harmonize_layer"
+      "mcp__photoshop__harmonize_layer",
+      "mcp__photoshop__save_document"
     ]
   },
   "hooks": {

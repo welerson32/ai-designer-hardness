@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ROOT, LOCK, VENDOR, MCP_DIR, PROXY_DIR, UPIA, run, findUv, vendorCommit, portaAberta } from './lib.mjs';
+import { ROOT, LOCK, VENDOR, MCP_DIR, PROXY_DIR, UPIA, run, findUv, vendorCommit, portaAberta, pythonPronto } from './lib.mjs';
 import { iniciarProxy } from './doctor.mjs';
 
 const LONGO = { timeout: 600000 };
@@ -40,8 +40,9 @@ const PASSOS = {
   python() {
     const uv = findUv();
     if (!uv) return resultado('python', false, 'uv ausente (rode o passo uv)');
-    const out = run(uv, ['sync', '--directory', MCP_DIR, '--no-install-project'], LONGO);
-    return resultado('python', out !== null && existsSync(join(MCP_DIR, '.venv')), 'ambiente Python do adb-mcp');
+    run(uv, ['sync', '--directory', MCP_DIR, '--no-install-project'], LONGO);
+    const py = pythonPronto();
+    return resultado('python', py.ok, py.msg);
   },
 
   'proxy-deps'() {

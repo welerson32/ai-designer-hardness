@@ -5,8 +5,16 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   ROOT, LOCK, VENDOR, MCP_DIR, PROXY_DIR, PROXY_LOG,
-  run, findUv, vendorCommit, photoshopAno, photoshopAberto, portaAberta, sondarPlugin,
+  run, findUv, vendorCommit, photoshopAno, photoshopAberto, portaAberta, sondarPlugin, pythonPronto,
 } from './lib.mjs';
+import { lerServidores, testarServidor } from './mcp-check.mjs';
+
+const SONDA_MSG = {
+  OK: 'plugin respondeu',
+  SEM_PLUGIN: 'plugin desligado no Photoshop (painel desconectado ou plugin não instalado)',
+  SEM_PROXY: 'conexão local fora do ar',
+  ERRO: 'erro ao testar a conexão',
+};
 
 const NODE_MIN = 18;
 
@@ -24,7 +32,8 @@ export async function diagnosticar({ sondar = true } = {}) {
   const commit = existsSync(VENDOR) ? vendorCommit() : null;
   r.push(item('vendor', commit === LOCK.commit, 'auto', commit ? `adb-mcp em ${commit.slice(0, 7)} (esperado ${LOCK.commit.slice(0, 7)})` : 'adb-mcp não baixado'));
 
-  r.push(item('python', existsSync(join(MCP_DIR, '.venv')), 'auto', 'ambiente Python do adb-mcp'));
+  const py = existsSync(join(MCP_DIR, '.venv')) ? pythonPronto() : { ok: false, msg: 'ambiente Python do adb-mcp não criado' };
+  r.push(item('python', py.ok, 'auto', py.msg));
   r.push(item('proxy-deps', existsSync(join(PROXY_DIR, 'node_modules', 'socket.io')), 'auto', 'dependências do proxy'));
   r.push(item('workspace', existsSync(join(ROOT, 'workspace')), 'auto', 'pasta workspace/'));
 
@@ -34,6 +43,18 @@ export async function diagnosticar({ sondar = true } = {}) {
   const pacote = [LOCK.plugin.ccxMantenedor, LOCK.plugin.ccxUsuario].find((p) => existsSync(join(ROOT, p)));
   r.push(item('plugin-pacote', Boolean(pacote), 'guiado', pacote ? `pacote do plugin em ${pacote}` : 'pacote do plugin ausente (gerar pelo UXP Developer Tool)'));
 
+  if (sondar && py.ok) {
+    const resultados = await Promise.all(lerServidores(ROOT).map((s) => testarServidor(s, { cwd: ROOT })));
+    for (const m of resultados) {
+      let msg = m.ok ? `servidor ${m.nome} sobe e responde` : `servidor ${m.nome}: ${m.motivo}`;
+      if (!m.ok && /não encontrado no PATH/.test(m.motivo) && uv && uv !== 'uv') {
+        msg += ' — uv instalado, mas o Claude Code ainda não enxerga: fechar e abrir o Claude Code';
+      }
+      if (!m.ok && m.stderr) msg += ` | ${m.stderr.replace(/\s+/g, ' ').slice(-200)}`;
+      r.push(item(`mcp-${m.nome}`, m.ok, 'auto', msg));
+    }
+  }
+
   const proxy = await portaAberta();
   r.push(item('proxy', proxy, 'auto', `proxy na porta ${LOCK.proxyPorta}`));
 
@@ -42,7 +63,7 @@ export async function diagnosticar({ sondar = true } = {}) {
 
   if (sondar && uv && proxy && aberto && r.find((x) => x.id === 'python').ok) {
     const s = sondarPlugin(uv);
-    r.push(item('plugin-conectado', s === 'OK', 'guiado', s === 'OK' ? 'plugin respondeu' : s === 'SEM_PLUGIN' ? 'plugin não respondeu (desconectado ou não instalado)' : 'erro ao testar conexão'));
+    r.push(item('plugin-conectado', s === 'OK', 'guiado', SONDA_MSG[s]));
   } else {
     r.push(item('plugin-conectado', false, 'guiado', 'não testado (depende de proxy, Python e Photoshop aberto)'));
   }
