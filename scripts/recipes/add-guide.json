@@ -1,0 +1,22 @@
+{
+  "description": "Adiciona uma guia no documento ativo. orientation = vertical | horizontal; position em px.",
+  "server": "photoshop-bp",
+  "params": { "position": "int", "orientation": "vertical|horizontal" },
+  "commands": [
+    {
+      "_obj": "make",
+      "new": {
+        "_obj": "good",
+        "position": { "_unit": "pixelsUnit", "_value": "{{position}}" },
+        "orientation": { "_enum": "orientation", "_value": "{{orientation}}" },
+        "kind": { "_enum": "kind", "_value": "document" }
+      },
+      "_target": [
+        { "_ref": "document", "_enum": "ordinal", "_value": "targetEnum" },
+        { "_ref": "good" }
+      ]
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}

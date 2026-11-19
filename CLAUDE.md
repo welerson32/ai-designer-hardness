@@ -78,7 +78,8 @@ Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nun
 Detalhe: `.claude/policies/pecas.md`.
 
 1. A pauta chega com **textos do post** e **características esperadas** → registre no Briefing do handoff, textos **literais**.
-2. **Carrossel = um único PSD com uma única prancheta**, folhas lado a lado (`geo.mjs carrossel`). Nunca um arquivo ou uma prancheta por folha.
+2. **Carrossel = um único PSD com uma única prancheta (Artboard de verdade)**, folhas lado a lado (`geo.mjs carrossel`). Nunca um arquivo ou uma prancheta por folha.
+3. **Entrega do carrossel:** o PSD + **uma imagem por folha** (`scripts/exportar.mjs`).
 
 ## Clientes (mandato)
 
@@ -104,7 +105,7 @@ Detalhe: skill `ps-cliente`.
 - `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
 - `scripts/setup/` — `doctor.mjs` (diagnóstico), `install.mjs` (instalação/reparo). `setup/` — versão travada do adb-mcp e pacote do plugin (gerado pelo UXP Developer Tool). `vendor/` — adb-mcp baixado (ignorado).
-- `scripts/` — `cliente.mjs`, `pauta.mjs`, `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
+- `scripts/` — `cliente.mjs`, `pauta.mjs`, `geo.mjs`, `exportar.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
 - `templates/` — modelos (handoff de pauta, dossiê e identidade de cliente, formatos/grids).
 - `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `sessoes.json`, `clientes/<slug>/` (`cliente.json`, `dossie.md`, `identidade.json`, `referencias/`, `assets/`), `pautas/<slug>/` (`pauta.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.

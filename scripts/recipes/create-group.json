@@ -1,0 +1,14 @@
+{
+  "description": "Cria um grupo de camadas vazio acima da camada selecionada (com a prancheta selecionada, o grupo nasce dentro dela). Carrossel: folha-01, folha-02…, continuo.",
+  "server": "photoshop-bp",
+  "params": { "name": "string" },
+  "commands": [
+    {
+      "_obj": "make",
+      "_target": [ { "_ref": "layerSection" } ],
+      "using": { "_obj": "layerSection", "name": "{{name}}" }
+    }
+  ],
+  "returns": "descriptor do make",
+  "validated": false
+}

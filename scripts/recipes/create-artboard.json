@@ -1,0 +1,22 @@
+{
+  "description": "Cria uma prancheta (artboard) no documento ativo com o retângulo indicado (px). Para carrossel: uma prancheta só, do tamanho total (geo.mjs carrossel).",
+  "server": "photoshop-bp",
+  "params": { "name": "string", "left": "int", "top": "int", "right": "int", "bottom": "int" },
+  "commands": [
+    {
+      "_obj": "make",
+      "_target": [ { "_ref": "artboardSection" } ],
+      "name": "{{name}}",
+      "artboardRect": {
+        "_obj": "classFloatRect",
+        "top": "{{top}}",
+        "left": "{{left}}",
+        "bottom": "{{bottom}}",
+        "right": "{{right}}"
+      }
+    }
+  ],
+  "returns": "descriptor do make",
+  "notes": "Gravações do Alchemist às vezes incluem layerSectionStart/End; aqui omitidos. Validar se a prancheta nasce vazia ou engloba a camada selecionada.",
+  "validated": false
+}

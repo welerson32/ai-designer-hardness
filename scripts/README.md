@@ -4,11 +4,12 @@ O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aq
 
 - **`pauta.mjs`** / **`cliente.mjs`** — pautas (nova, listar, vincular, saída, encerrar) e clientes (nova, listar, checar lacunas, concluir).
 - **`geo.mjs`** — cálculo de layout determinístico (`center`, `align`, `move-to`, `grid`, `distribute`). `node scripts/geo.mjs` sem argumentos mostra o uso.
+- **`exportar.mjs`** — gera o lote que exporta cada folha do carrossel como imagem separada.
 - **`recipe.mjs`** — monta comandos a partir das receitas: `node scripts/recipe.mjs <receita> k=v ...` ou `--lote <arquivo>`.
 - **`preview.mjs`** — chamadas do preview barato (duplicar → recortar → ≤ 800px → capturar → fechar cópia). Uso exclusivo do `ps-art-director`.
 - **`recipes/`** — receitas batchPlay enviadas por `call_batch_play_command` (servidor `photoshop-bp`).
 
-Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `geo`, `recipe`, `preview`).
+Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `geo`, `exportar`, `recipe`, `preview`).
 
 ## Formato de receita
 
@@ -46,3 +47,7 @@ Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `geo`, `reci
 | `crop-document` | recorte (só na cópia) | não |
 | `resize-image` | redução (só na cópia) | não |
 | `close-document` | fechar cópia por nome, sem salvar | não |
+| `select-document` | ativar documento pelo ID | não |
+| `create-artboard` | criar prancheta (carrossel: uma só, tamanho total) | não |
+| `add-guide` | guia vertical/horizontal | não |
+| `create-group` | grupo de camadas (folha-NN, continuo) | não |

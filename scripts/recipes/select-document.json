@@ -1,0 +1,13 @@
+{
+  "description": "Torna ativo o documento com o ID indicado (doc.id do estado.json).",
+  "server": "photoshop-bp",
+  "params": { "docId": "int" },
+  "commands": [
+    {
+      "_obj": "select",
+      "_target": [ { "_ref": "document", "_id": "{{docId}}" } ]
+    }
+  ],
+  "returns": "descriptor vazio",
+  "validated": false
+}
