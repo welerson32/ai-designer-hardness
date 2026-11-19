@@ -1,5 +1,5 @@
-# Pacote manual do plugin (plano B)
+# Pacote do plugin
 
-Normalmente vazio: o instalador gera o pacote sozinho em `vendor/photoshop-mcp-agent.ccx`.
+`photoshop-mcp-agent.ccx` gerado pelo **UXP Developer Tool** (Package) a partir do commit em `../adb-mcp.lock.json`. Com ele aqui, nenhum usuário precisa do UXP Developer Tool.
 
-Se o Creative Cloud recusar o pacote gerado, coloque aqui `photoshop-mcp-agent.ccx` empacotado pelo UXP Developer Tool — ele passa a ter prioridade. Passo a passo: `docs/manutencao.md`.
+Sem ele, o `ps-setup` guia cada usuário a gerar o próprio pacote em `vendor/plugin/`. Passo a passo: `docs/manutencao.md`.

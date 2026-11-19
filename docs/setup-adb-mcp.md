@@ -12,13 +12,13 @@ O designer **não** precisa ler isto: ao abrir o Claude Code na pasta do projeto
 | Ambiente Python do MCP | `vendor/adb-mcp/mcp/.venv` | `uv sync --no-install-project` |
 | Dependências do proxy | `vendor/adb-mcp/adb-proxy-socket/node_modules` | `npm install` |
 | Proxy (porta 3001) | processo em segundo plano | iniciado pelo hook a cada sessão; log em `vendor/proxy.log` |
-| Pacote do plugin | `vendor/photoshop-mcp-agent.ccx` | zip de `vendor/adb-mcp/uxp/ps` (plano B: `setup/plugin/`) |
+| Pacote do plugin | `setup/plugin/` (mantenedor) ou `vendor/plugin/` (usuário) | UXP Developer Tool › Package |
 | Plugin do Photoshop | Creative Cloud | instalador da Adobe (`UnifiedPluginInstallerAgent /install`) ou duplo clique |
 
 ## Comandos
 
 - Diagnóstico: `node scripts/setup/doctor.mjs` (`--rapido` pula o teste de conexão).
-- Instalar/reparar: `node scripts/setup/install.mjs tudo` ou passos (`uv`, `vendor`, `python`, `proxy-deps`, `plugin-pacote`, `workspace`, `proxy`, `plugin`).
+- Instalar/reparar: `node scripts/setup/install.mjs tudo` ou passos (`uv`, `vendor`, `python`, `proxy-deps`, `plugin-pasta`, `workspace`, `proxy`, `plugin`).
 - Self-tests: `node .claude/hooks/<batchplay-guard|session-handoff>.selftest.cjs` e `node scripts/<cliente|pauta|geo|recipe|preview>.selftest.mjs`.
 
 ## Requisitos

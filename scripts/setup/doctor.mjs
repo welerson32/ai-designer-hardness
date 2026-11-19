@@ -31,8 +31,8 @@ export async function diagnosticar({ sondar = true } = {}) {
   const ano = photoshopAno();
   r.push(item('photoshop', Boolean(ano && ano >= LOCK.photoshopMinAno), 'guiado', ano ? `Photoshop ${ano} (mín. ${LOCK.photoshopMinAno})` : 'Photoshop não encontrado'));
 
-  const pacote = [LOCK.plugin.ccxManual, LOCK.plugin.ccxGerado].find((p) => existsSync(join(ROOT, p)));
-  r.push(item('plugin-pacote', Boolean(pacote), 'auto', pacote ? `pacote do plugin em ${pacote}` : 'pacote do plugin não gerado'));
+  const pacote = [LOCK.plugin.ccxMantenedor, LOCK.plugin.ccxUsuario].find((p) => existsSync(join(ROOT, p)));
+  r.push(item('plugin-pacote', Boolean(pacote), 'guiado', pacote ? `pacote do plugin em ${pacote}` : 'pacote do plugin ausente (gerar pelo UXP Developer Tool)'));
 
   const proxy = await portaAberta();
   r.push(item('proxy', proxy, 'auto', `proxy na porta ${LOCK.proxyPorta}`));
@@ -73,7 +73,7 @@ async function modoHook() {
   }
   r = await diagnosticar({ sondar: true });
 
-  const essenciais = r.filter((x) => x.id !== 'photoshop-aberto' && x.id !== 'plugin-conectado');
+  const essenciais = r.filter((x) => !['photoshop-aberto', 'plugin-conectado', 'plugin-pacote'].includes(x.id));
   const falhas = essenciais.filter((x) => !x.ok);
   const ps = r.find((x) => x.id === 'photoshop-aberto');
   const plugin = r.find((x) => x.id === 'plugin-conectado');

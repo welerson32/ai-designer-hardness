@@ -6,8 +6,8 @@
   "proxyPorta": 3001,
   "plugin": {
     "fonte": "vendor/adb-mcp/uxp/ps",
-    "ccxGerado": "vendor/photoshop-mcp-agent.ccx",
-    "ccxManual": "setup/plugin/photoshop-mcp-agent.ccx",
+    "ccxMantenedor": "setup/plugin/photoshop-mcp-agent.ccx",
+    "ccxUsuario": "vendor/plugin/photoshop-mcp-agent.ccx",
     "nomeNoPhotoshop": "Photoshop MCP Agent"
   }
 }

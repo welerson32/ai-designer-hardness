@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, LOCK, VENDOR, MCP_DIR, PROXY_DIR, UPIA, run, findUv, vendorCommit, portaAberta } from './lib.mjs';
@@ -7,19 +7,8 @@ import { iniciarProxy } from './doctor.mjs';
 
 const LONGO = { timeout: 600000 };
 
-export function empacotarPlugin() {
-  const fonte = join(ROOT, LOCK.plugin.fonte);
-  if (!existsSync(join(fonte, 'manifest.json'))) return { ok: false, msg: 'código do plugin ausente (rode o passo vendor)' };
-  const destino = join(ROOT, LOCK.plugin.ccxGerado);
-  const zip = destino.replace(/\.ccx$/, '.zip');
-  for (const f of [zip, destino]) if (existsSync(f)) rmSync(f);
-  const entradas = readdirSync(fonte).filter((n) => !n.startsWith('.'));
-  const tar = join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'tar.exe');
-  if (run(tar, ['-a', '-c', '-f', zip, '-C', fonte, ...entradas], LONGO) === null || !existsSync(zip)) {
-    return { ok: false, msg: 'falhou ao empacotar o plugin (tar)' };
-  }
-  renameSync(zip, destino);
-  return { ok: true, msg: `plugin empacotado em ${LOCK.plugin.ccxGerado}` };
+export function pacotePlugin() {
+  return [LOCK.plugin.ccxMantenedor, LOCK.plugin.ccxUsuario].map((p) => join(ROOT, p)).find((p) => existsSync(p)) ?? null;
 }
 const resultado = (passo, ok, msg) => ({ passo, ok, msg });
 
@@ -67,24 +56,17 @@ const PASSOS = {
     return resultado('proxy', await portaAberta(), `proxy na porta ${LOCK.proxyPorta}`);
   },
 
-  'plugin-pacote'() {
-    const manual = join(ROOT, LOCK.plugin.ccxManual);
-    if (existsSync(manual)) return resultado('plugin-pacote', true, `usando pacote manual ${LOCK.plugin.ccxManual}`);
-    const r = empacotarPlugin();
-    return resultado('plugin-pacote', r.ok, r.msg);
+  'plugin-pasta'() {
+    mkdirSync(join(ROOT, 'vendor', 'plugin'), { recursive: true });
+    return resultado('plugin-pasta', true, join(ROOT, 'vendor', 'plugin'));
   },
 
   plugin() {
-    const manual = join(ROOT, LOCK.plugin.ccxManual);
-    let ccx = existsSync(manual) ? manual : join(ROOT, LOCK.plugin.ccxGerado);
-    if (!existsSync(ccx)) {
-      const r = empacotarPlugin();
-      if (!r.ok) return resultado('plugin', false, r.msg);
-      ccx = join(ROOT, LOCK.plugin.ccxGerado);
-    }
-    if (!existsSync(UPIA)) return resultado('plugin', false, `instalador da Adobe não encontrado — instalar com duplo clique em ${ccx}`);
+    const ccx = pacotePlugin();
+    if (!ccx) return resultado('plugin', false, 'SEM_PACOTE: gerar pelo UXP Developer Tool (etapa guiada do ps-setup)');
+    if (!existsSync(UPIA)) return resultado('plugin', false, `SEM_INSTALADOR: instalar com duplo clique em ${ccx}`);
     const out = run(UPIA, ['/install', ccx], LONGO);
-    return resultado('plugin', out !== null, out ?? `instalador da Adobe retornou erro — instalar com duplo clique em ${ccx}`);
+    return resultado('plugin', out !== null, out ?? `FALHOU: instalar com duplo clique em ${ccx}`);
   },
 
   workspace() {
@@ -93,7 +75,7 @@ const PASSOS = {
   },
 };
 
-const ORDEM = ['uv', 'vendor', 'python', 'proxy-deps', 'plugin-pacote', 'workspace', 'proxy'];
+const ORDEM = ['uv', 'vendor', 'python', 'proxy-deps', 'plugin-pasta', 'workspace', 'proxy'];
 
 export async function instalar(passos) {
   const lista = passos.includes('tudo') ? ORDEM : passos;
