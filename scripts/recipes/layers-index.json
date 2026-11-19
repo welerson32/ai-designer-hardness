@@ -1,0 +1,19 @@
+{
+  "description": "Índice compacto de todas as camadas do documento ativo (nome, id, tipo, bounds sem efeitos, visível, pai). Uso exclusivo do ps-scout: filtrar localmente e nunca repassar o índice inteiro.",
+  "server": "photoshop-bp",
+  "params": {},
+  "commands": [
+    {
+      "_obj": "multiGet",
+      "_target": { "_ref": [ { "_ref": "document", "_enum": "ordinal", "_value": "targetEnum" } ] },
+      "extendedReference": [
+        [ "name", "layerID", "layerKind", "boundsNoEffects", "visible", "parentLayerID" ],
+        { "_obj": "layer", "index": 1, "count": -1 }
+      ],
+      "options": { "failOnMissingProperty": false, "failOnMissingElement": false }
+    }
+  ],
+  "returns": "{ list: [ { name, layerID, layerKind, boundsNoEffects: { left, top, right, bottom }, visible, parentLayerID } ] }",
+  "notes": "layerKind é numérico: 1 pixel, 2 adjustment, 3 text, 4 vector, 5 smartObject, 6 video, 7 group, 8 3D, 9 gradient, 10 pattern, 11 solidColor, 12 background, 13 groupEnd. Conferir no primeiro uso.",
+  "validated": false
+}

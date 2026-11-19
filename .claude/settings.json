@@ -5,7 +5,8 @@
       "Read(./**/*.psd)",
       "Read(./**/*.psb)",
       "Read(./assets/raw/**)",
-      "Read(./exports/**)"
+      "Read(./exports/**)",
+      "mcp__photoshop__get_layers"
     ]
   }
 }

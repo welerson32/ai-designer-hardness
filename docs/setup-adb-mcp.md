@@ -2,7 +2,9 @@
 
 Referência: https://github.com/mikechambers/adb-mcp
 
-1. Instalar o plugin UXP do Photoshop (via UXP Developer Tool) e carregá-lo.
-2. Subir o proxy local (`adb-proxy-socket`, Node).
-3. Copiar `.mcp.json.example` para `.mcp.json` e ajustar `<CAMINHO_ADB_MCP>`.
-4. No plugin, clicar em **Connect**; no Claude Code, `/mcp` deve listar `photoshop`.
+1. Clonar o adb-mcp e definir a variável de ambiente `ADB_MCP_DIR` com o caminho do clone (usada pelo `.mcp.json`).
+2. Instalar e carregar o plugin UXP do Photoshop (`uxp/ps`, via UXP Developer Tool).
+3. Subir o proxy local: `cd $ADB_MCP_DIR/adb-proxy-socket && npm install && node proxy.js` (porta 3001).
+4. No plugin, clicar em **Connect**.
+5. No Claude Code, `/mcp` deve listar `photoshop` e `photoshop-bp`.
+6. Validar o guard do scout: `node .claude/hooks/scout-readonly-guard.selftest.cjs`.

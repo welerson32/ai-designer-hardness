@@ -1,0 +1,16 @@
+{
+  "description": "IDs das camadas selecionadas no documento ativo.",
+  "server": "photoshop-bp",
+  "params": {},
+  "commands": [
+    {
+      "_obj": "get",
+      "_target": [
+        { "_property": "targetLayersIDs" },
+        { "_ref": "document", "_enum": "ordinal", "_value": "targetEnum" }
+      ]
+    }
+  ],
+  "returns": "{ targetLayersIDs: [ { _ref: 'layer', _id: <id> } ] }",
+  "validated": false
+}
