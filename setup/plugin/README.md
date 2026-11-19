@@ -1,5 +1,5 @@
-# Pacote do plugin
+# Pacote manual do plugin (plano B)
 
-`photoshop-mcp-agent.ccx` — plugin do adb-mcp empacotado para instalação permanente no Photoshop (dois cliques ou `node scripts/setup/install.mjs plugin`).
+Normalmente vazio: o instalador gera o pacote sozinho em `vendor/photoshop-mcp-agent.ccx`.
 
-Gerado pelo mantenedor a partir do commit em `../adb-mcp.lock.json`. Passo a passo: `docs/manutencao.md`.
+Se o Creative Cloud recusar o pacote gerado, coloque aqui `photoshop-mcp-agent.ccx` empacotado pelo UXP Developer Tool — ele passa a ter prioridade. Passo a passo: `docs/manutencao.md`.

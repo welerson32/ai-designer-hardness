@@ -14,7 +14,7 @@ Público leigo em tecnologia: **faça tudo o que der sozinho**; guie só o que e
 ## 2. Reparo automático (`tipo: auto`)
 
 - Antes, uma linha: "Vou preparar a conexão com o Photoshop — leva alguns minutos e pode pedir sua aprovação algumas vezes."
-- `node scripts/setup/install.mjs tudo` (ou só os passos que falharam, na ordem: `uv`, `vendor`, `python`, `proxy-deps`, `workspace`, `proxy`).
+- `node scripts/setup/install.mjs tudo` (ou só os passos que falharam, na ordem: `uv`, `vendor`, `python`, `proxy-deps`, `plugin-pacote`, `workspace`, `proxy`).
 - **Node ausente** (o hook avisou que não conseguiu rodar): `winget install --id OpenJS.NodeJS.LTS -e --silent --accept-source-agreements --accept-package-agreements`, depois peça para a pessoa **fechar e abrir o Claude Code** e siga.
 - `uv` recém-instalado pode não estar no PATH da sessão — o script já procura nos locais padrão; se falhar, peça para reabrir o Claude Code.
 - Rode o diagnóstico de novo. Passo que continuar falhando → explique em uma linha o que não deu certo e o que fazer; não insista em loop.
@@ -26,8 +26,8 @@ Público leigo em tecnologia: **faça tudo o que der sozinho**; guie só o que e
 
 **Plugin** (antes de guiar, tente `node scripts/setup/install.mjs plugin`):
 - Instalou → siga para a conexão.
-- Falhou com pacote presente → "Dê dois cliques no arquivo `setup/plugin/photoshop-mcp-agent.ccx` desta pasta e confirme a instalação no Creative Cloud."
-- Pacote ausente (`plugin-pacote` = falso) → é falta de manutenção do projeto: diga que esta instalação ainda não está completa e que é preciso falar com quem mantém o projeto. Não tente contornar.
+- Falhou → abra a pasta do pacote para a pessoa (`explorer.exe /select,<caminho do .ccx da mensagem>`) e diga: "Abri a pasta com o instalador do plugin. Dê dois cliques no arquivo selecionado e confirme a instalação no Creative Cloud."
+- O pacote é gerado sozinho a partir do adb-mcp baixado; se nem isso funcionar, explique que é preciso falar com quem mantém o projeto.
 
 **Conexão** (Photoshop aberto, plugin instalado, `plugin-conectado` = falso):
 > 1. No Photoshop, abra o menu **Plugins** › **Photoshop MCP Agent**.
@@ -37,10 +37,6 @@ Público leigo em tecnologia: **faça tudo o que der sozinho**; guie só o que e
 > Me avise quando fizer.
 
 Depois de cada etapa: `node scripts/setup/doctor.mjs` e confirme em linguagem simples ("Pronto, estou conectado ao seu Photoshop.").
-
-## 4. Manutenção (`tipo: manutencao`)
-
-Itens assim não são resolvidos pela pessoa: explique que falta uma etapa de quem mantém o projeto (`docs/manutencao.md`).
 
 ## Regras
 

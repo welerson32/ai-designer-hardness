@@ -5,8 +5,9 @@
   "photoshopMinVersao": "26.0.0",
   "proxyPorta": 3001,
   "plugin": {
-    "ccx": "setup/plugin/photoshop-mcp-agent.ccx",
-    "geradoDoCommit": null,
+    "fonte": "vendor/adb-mcp/uxp/ps",
+    "ccxGerado": "vendor/photoshop-mcp-agent.ccx",
+    "ccxManual": "setup/plugin/photoshop-mcp-agent.ccx",
     "nomeNoPhotoshop": "Photoshop MCP Agent"
   }
 }

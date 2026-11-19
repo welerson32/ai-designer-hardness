@@ -90,7 +90,7 @@ Detalhe: skill `ps-cliente`.
 - `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
 - `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
-- `scripts/setup/` — `doctor.mjs` (diagnóstico), `install.mjs` (instalação/reparo). `setup/` — versão travada do adb-mcp e pacote do plugin. `vendor/` — adb-mcp baixado (ignorado).
+- `scripts/setup/` — `doctor.mjs` (diagnóstico), `install.mjs` (instalação/reparo). `setup/` — versão travada do adb-mcp (e pacote manual do plugin, plano B). `vendor/` — adb-mcp baixado (ignorado).
 - `scripts/` — `cliente.mjs`, `pauta.mjs`, `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
 - `templates/` — modelos (handoff de pauta, dossiê e identidade de cliente, formatos/grids).
