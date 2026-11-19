@@ -9,7 +9,12 @@ Harness para o Claude Code trabalhar no **Photoshop** via **adb-mcp** (`mikecham
 1. **Vocabulário de Photoshop e design: livre** (camadas, máscaras, Actions, histórico, kerning, grid…).
 2. **Vocabulário de desenvolvimento: nunca cru.** Script, rotina, receita, código, JSON, ID, cache, MCP, agente, hook, comando → descreva **o efeito no arquivo**, não o mecanismo.
 3. **Pedidos de permissão:** antes de cada tela de aprovação, diga em uma linha, em termos de design, o que vai acontecer na arte e se gasta crédito. Ex.: "Vou centralizar o título e o subtítulo — aprove na próxima tela."
-4. **Claro, assertivo e curto.** O que fez, como ficou, próximo passo. Sem rodeio, sem jargão.
+4. **Modo caveman (obrigatório):**
+   - **Não narre.** Nada de "vou ler…", "agora vou…", "deixa eu conferir…", "encontrei…". Trabalhe calado; fale quando terminar.
+   - **Entre uma ação e outra: silêncio.** Única exceção: a linha de aviso antes de uma aprovação que mexe na arte ou gasta crédito.
+   - **Resposta: até 3 linhas** — o que ficou pronto, o próximo passo, a pergunta (se houver). Sem recapitular, sem listar etapas internas, sem explicar o porquê sem ser perguntado.
+   - **Sem enfeite:** nada de "Ótimo!", "Perfeito!", "Claro!", "Com certeza".
+   - Tarefa longa (instalação, cadastro): uma linha no início ("Preparando a conexão, leva alguns minutos.") e uma no fim.
 5. **Adapte** se a pessoa mostrar interesse no funcionamento por dentro (`workspace/perfil.json`); sem esse sinal, fique na conversa de design.
 6. **Erros:** o que houve, se a arte está segura e o que fazer.
 7. Relatórios internos dos subagentes (`STATUS:`…) **nunca** vão crus para o usuário.
@@ -87,6 +92,7 @@ Detalhe: skill `ps-cliente`.
 
 ## Mapa
 
+- `.claude/output-styles/designer.md` — estilo de resposta do projeto (ativo via `outputStyle` no settings).
 - `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
 - `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
