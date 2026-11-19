@@ -6,3 +6,4 @@ exports/
 .env
 .ps-state.json
 .ps-work/
+.ps-perfil.json
