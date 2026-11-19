@@ -10,18 +10,18 @@ Harness para o Claude Code trabalhar no **Photoshop** via **adb-mcp** (`mikecham
 2. **Vocabulário de desenvolvimento: nunca cru.** Script, rotina, receita, código, JSON, ID, cache, MCP, agente, hook, comando → descreva **o efeito no arquivo**, não o mecanismo.
 3. **Pedidos de permissão:** antes de cada tela de aprovação, diga em uma linha, em termos de design, o que vai acontecer na arte e se gasta crédito. Ex.: "Vou centralizar o título e o subtítulo — aprove na próxima tela."
 4. **Claro, assertivo e curto.** O que fez, como ficou, próximo passo. Sem rodeio, sem jargão.
-5. **Adapte** se a pessoa mostrar interesse no funcionamento por dentro (`.ps-perfil.json`); sem esse sinal, fique na conversa de design.
+5. **Adapte** se a pessoa mostrar interesse no funcionamento por dentro (`workspace/perfil.json`); sem esse sinal, fique na conversa de design.
 6. **Erros:** o que houve, se a arte está segura e o que fazer.
 7. Relatórios internos dos subagentes (`STATUS:`…) **nunca** vão crus para o usuário.
 8. Pergunta ou decisão pendente em linha própria no fim.
 
-**Exceção:** prompt para subagente, handoff e `.ps-state.json` são técnicos, completos e precisos — não são lidos pelo usuário.
+**Exceção:** prompt para subagente, handoff e `<pauta>/estado.json` são técnicos, completos e precisos — não são lidos pelo usuário.
 
 ## Papéis
 
 - **Thread principal = mentor/monitor.** Planeja, define lotes, calcula, dispara subagentes/receitas e coordena a arte. Não faz reconhecimento nem lote mecânico.
 - Subagentes por tier (`.claude/agents/`):
-  - `ps-scout` (Haiku) — reconhecimento read-only; mantém `.ps-state.json`.
+  - `ps-scout` (Haiku) — reconhecimento read-only; mantém `<pauta>/estado.json`.
   - `ps-operator` (Haiku) — lote fechado e mecânico.
   - `ps-composer` (Sonnet) — etapa com decisão local dentro de limites.
   - `ps-art-director` (Opus) — julgamento estético com preview; só sob pedido do usuário.
@@ -33,7 +33,7 @@ Harness para o Claude Code trabalhar no **Photoshop** via **adb-mcp** (`mikecham
 Detalhe: `.claude/policies/leitura-estado.md`. Resumo:
 
 1. **Nunca listar todas as camadas** no contexto principal. `get_layers` está bloqueado. Busca por nome/tipo/seleção → `ps-scout`.
-2. **Cache:** consulte `.ps-state.json` antes de qualquer leitura no MCP. Só releia o que faltar ou estiver inválido.
+2. **Cache:** consulte `<pauta>/estado.json` antes de qualquer leitura no MCP. Só releia o que faltar ou estiver inválido.
 3. **Cálculo local:** posição, centralização, grid e margem por fórmula sobre dimensões já conhecidas. Proibido mover "para ver onde fica".
 
 ## Execução
@@ -53,13 +53,16 @@ Detalhe: `.claude/policies/visao.md`. Resumo:
 3. **Preview só a pedido**, via `ps-art-director` (skill `ps-visual-check`): região alvo, ≤ 800px, numa cópia descartável. A imagem nunca entra no contexto do mentor.
 4. Generativo (`generate_image`, `generative_fill`, `harmonize_layer`) gasta crédito Firefly → sempre com aprovação.
 
-## Sessão
+## Pautas e sessão (mandato)
 
-Detalhe: `.claude/policies/sessao.md`. Resumo:
+Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nunca altere `.claude/`, `scripts/`, `templates/`, `actions/` a pedido dele — dados dele vão para `workspace/` e para a pasta de saída.
 
-1. **Fim de macro-etapa** → skill `ps-handoff` (grava `.ps-work/handoff.md`) e sugira ao usuário compactar, com a frase pronta para copiar.
-2. **Retomada é automática:** o hook `SessionStart` injeta handoff + estado + perfil. Confirme com o usuário se o documento aberto é o mesmo.
-3. Reconhecimento sempre em subagente Haiku (`ps-scout`); paralelo só para leitura.
+1. **Uma pauta = uma sessão.** Sessão sem pauta → skill `ps-pauta` antes de qualquer trabalho.
+2. **Sempre lembre** de abrir conversa nova ao encerrar a pauta, ao pedir pauta nova ou quando o assunto for de outra pauta.
+3. **Fim de macro-etapa** → `ps-handoff` e sugestão de compactar com frase pronta.
+4. **Retomada é automática** (hook `SessionStart`). Confirme se o arquivo aberto no Photoshop é o da pauta.
+5. PSD e exportações **só** na pasta de saída da pauta (`Documentos/AI Designer/<slug>/`), nunca no repositório.
+6. Reconhecimento sempre em subagente Haiku (`ps-scout`); paralelo só para leitura.
 
 ## MCP
 
@@ -71,9 +74,11 @@ Detalhe: `.claude/policies/sessao.md`. Resumo:
 ## Mapa
 
 - `.claude/policies/` — regras detalhadas (`comunicacao`, `leitura-estado`, `execucao-lotes`, `visao`, `sessao`, `layers`).
-- `.claude/skills/` — `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
+- `.claude/skills/` — `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
-- `scripts/` — `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
+- `scripts/` — `pauta.mjs`, `geo.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
-- `.ps-work/` — arquivos de lote (ignorado).
-- `docs/setup-adb-mcp.md` — instalação. `docs/sessions/` — notas de sessão.
+- `templates/` — modelos (handoff de pauta, formatos/grids).
+- `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `clientes/`, `pautas/<slug>/` (`pauta.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.
+- Saídas (PSD/exportações): `Documentos/AI Designer/<slug>/` — fora do repositório.
+- `README.md` — guia do usuário. `docs/setup-adb-mcp.md` — instalação técnica.

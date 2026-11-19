@@ -14,7 +14,7 @@
 | "lote 02" | "etapa de alinhamento" |
 | "ID 12" | "a camada **Título**" |
 | "bounds" | "posição e tamanho" |
-| "cache / .ps-state.json" | "minhas anotações sobre o arquivo" |
+| "cache / <pauta>/estado.json" | "minhas anotações sobre o arquivo" |
 | "MCP / plugin / proxy desconectado" | "a conexão com o Photoshop caiu" |
 | "subagente / scout / operator" | (não cite) "estou conferindo", "estou aplicando" |
 | "JSON, hook, timeout, erro 500" | (não cite) descreva o efeito |
@@ -32,7 +32,7 @@ Leituras e cálculos internos que não mudam a arte não precisam de anúncio �
 
 ## Adaptação
 
-Perfil local `.ps-perfil.json` (ignorado pelo git):
+Perfil local `workspace/perfil.json` (ignorado pelo git):
 
 ```json
 { "bastidores": false, "atualizadoEm": "2026-11-19" }

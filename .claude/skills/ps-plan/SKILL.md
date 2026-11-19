@@ -1,15 +1,15 @@
 ---
 name: ps-plan
-description: Monta o lote de uma etapa de trabalho no Photoshop em formato fixo e enxuto (.ps-work/<nome>.json), pronto para recipe.mjs e ps-operator. Use sempre que for alterar o documento.
+description: Monta o lote de uma etapa de trabalho no Photoshop em formato fixo e enxuto (<pauta>/etapas/<nome>.json), pronto para recipe.mjs e ps-operator. Use sempre que for alterar o documento.
 ---
 
 # Planejar um lote
 
 ## Passos
 
-1. Garanta no `.ps-state.json` os IDs e bounds necessários (faltou → `ps-scout`).
+1. Garanta no `<pauta>/estado.json` os IDs e bounds necessários (faltou → `ps-scout`).
 2. Calcule todo deslocamento/posição com `node scripts/geo.mjs` (`center`, `align`, `move-to`, `grid`, `distribute`).
-3. Escreva `.ps-work/<NN-nome>.json`:
+3. Escreva `<pauta>/etapas/<NN-nome>.json`:
 
 ```json
 {
@@ -31,6 +31,6 @@ description: Monta o lote de uma etapa de trabalho no Photoshop em formato fixo 
 - `expect`: bounds previstos das camadas com escrita previsível — vão direto para o cache após o lote.
 - `snapshot: false` só para lote somente de leitura (raro).
 
-4. Confira: `node scripts/recipe.mjs --lote .ps-work/<arquivo>.json` (erro = parâmetro faltando ou receita inexistente).
+4. Confira: `node scripts/recipe.mjs --lote <pauta>/etapas/<arquivo>.json` (erro = parâmetro faltando ou receita inexistente).
 5. Aplique conforme `.claude/policies/execucao-lotes.md` (direto ou `ps-operator`).
-6. Sucesso → grave `expect` no `.ps-state.json`; camadas com escrita imprevisível → `bounds: null`.
+6. Sucesso → grave `expect` no `<pauta>/estado.json`; camadas com escrita imprevisível → `bounds: null`.

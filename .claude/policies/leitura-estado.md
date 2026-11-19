@@ -9,9 +9,9 @@
   - receita `layers-index` — índice compacto (nome, id, tipo, bounds sem efeitos, visível) de todas as camadas. **Fica dentro do scout**: ele filtra e devolve/registra só o que foi pedido.
 - O mentor pede ao scout por nome exato, tipo (`layerKind`) ou seleção ativa. Nunca "me lista tudo".
 
-## 2. Cache `.ps-state.json`
+## 2. Cache `<pauta>/estado.json`
 
-Na raiz, ignorado pelo git. Escrito pelo `ps-scout`; atualizado pelo mentor após escrita de efeito previsível.
+Na pasta da pauta (`workspace/pautas/<slug>/`, ignorada pelo git). Escrito pelo `ps-scout`; atualizado pelo mentor após escrita de efeito previsível.
 
 ```json
 {

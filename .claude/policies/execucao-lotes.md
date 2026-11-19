@@ -29,4 +29,4 @@
 
 ## Arquivo de lote
 
-Em `.ps-work/` (ignorado pelo git). Formato em `.claude/skills/ps-plan/SKILL.md`.
+Em `<pauta>/etapas/` (ignorado pelo git). Formato em `.claude/skills/ps-plan/SKILL.md`.

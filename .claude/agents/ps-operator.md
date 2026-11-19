@@ -1,6 +1,6 @@
 ---
 name: ps-operator
-description: Aplica no Photoshop (via adb-mcp) um lote já planejado em .ps-work/<nome>.json — compila com recipe.mjs e executa as chamadas na ordem, sem decisão estética. Use para lotes acima de ~5 comandos ou com várias tools de alto nível.
+description: Aplica no Photoshop (via adb-mcp) um lote já planejado em <pauta>/etapas/<nome>.json — compila com recipe.mjs e executa as chamadas na ordem, sem decisão estética. Use para lotes acima de ~5 comandos ou com várias tools de alto nível.
 model: haiku
 ---
 
