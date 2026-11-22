@@ -11,6 +11,7 @@
       "Bash(node scripts/preview.mjs:*)",
       "Bash(node scripts/exportar.mjs:*)",
       "Bash(node scripts/pauta.mjs:*)",
+      "Bash(node scripts/pecas.mjs:*)",
       "Bash(node scripts/cliente.mjs:*)",
       "Bash(node scripts/setup/doctor.mjs:*)",
       "Bash(node scripts/setup/install.mjs:*)",
