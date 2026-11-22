@@ -19,7 +19,7 @@ O designer **não** precisa ler isto: ao abrir o Claude Code na pasta do projeto
 
 - Diagnóstico: `node scripts/setup/doctor.mjs` (`--rapido` pula o teste de conexão).
 - Instalar/reparar: `node scripts/setup/install.mjs tudo` ou passos (`uv`, `vendor`, `python`, `proxy-deps`, `plugin-pasta`, `workspace`, `proxy`, `plugin`).
-- Self-tests: `node .claude/hooks/<batchplay-guard|session-handoff>.selftest.cjs`, `node scripts/<cliente|pauta|geo|exportar|recipe|preview>.selftest.mjs` e `node scripts/setup/mcp-check.selftest.mjs`.
+- Self-tests: `node .claude/hooks/<batchplay-guard|session-handoff>.selftest.cjs`, `node scripts/<cliente|pauta|pecas|geo|exportar|recipe|preview>.selftest.mjs` e `node scripts/setup/mcp-check.selftest.mjs`.
 
 ## Requisitos
 

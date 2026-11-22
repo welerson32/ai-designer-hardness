@@ -26,13 +26,13 @@ O mentor pede uma ou mais consultas:
 
 ## Fluxo
 
-1. Leia `<pauta>/estado.json`, se existir. Responda do cache o que estiver válido (regras em `.claude/policies/leitura-estado.md`).
+1. Leia `<pauta>/estado.json`, se existir — só a entrada da peça pedida. Responda do cache o que estiver válido (regras em `.claude/policies/leitura-estado.md`).
 2. Faltou algo:
    - canvas → `get_document_info`;
    - seleção → receita `scripts/recipes/active-layers.json`;
    - nome/tipo → receita `scripts/recipes/layers-index.json`, filtrando localmente.
    Leia a receita, troque os `{{placeholders}}` e envie **um comando por chamada** (o MCP só devolve o resultado do primeiro).
-3. Atualize `<pauta>/estado.json` registrando **só** as camadas consultadas (nunca o índice inteiro), com `at`/`boundsAt` em ISO-8601 UTC.
+3. Atualize `<pauta>/estado.json` **dentro da peça informada pelo mentor** (`pecas.<id>`: `doc`, `pranchetas`, `layers`) registrando **só** as camadas consultadas (nunca o índice inteiro), com `at`/`boundsAt` em ISO-8601 UTC.
 
 ## Saída (curta, formato fixo)
 

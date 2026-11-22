@@ -5,6 +5,7 @@ const MAX_LAYERS = 40;
 const MAX_HANDOFF_CHARS = 4000;
 const MAX_PAUTAS = 15;
 const MAX_DOSSIE_CHARS = 9000;
+const MAX_METODO_CHARS = 4000;
 
 function readJson(file) {
   try {
@@ -22,16 +23,46 @@ function readText(file) {
   }
 }
 
-function summarizeState(state) {
-  if (!state?.doc) return null;
-  const d = state.doc;
-  const lines = [`Documento: "${d.title ?? '?'}" id=${d.id} ${d.width}x${d.height}px @${d.resolution ?? '?'} (lido em ${d.at ?? '?'})`];
-  const layers = Array.isArray(state.layers) ? state.layers : [];
-  for (const l of layers.slice(0, MAX_LAYERS)) {
+function docLine(d) {
+  return `Documento: "${d.title ?? '?'}" id=${d.id} ${d.width}x${d.height}px @${d.resolution ?? '?'} (lido em ${d.at ?? '?'})`;
+}
+
+function layerLines(layers) {
+  const list = Array.isArray(layers) ? layers : [];
+  const lines = list.slice(0, MAX_LAYERS).map((l) => {
     const b = l.bounds ? `${l.bounds.left},${l.bounds.top},${l.bounds.right},${l.bounds.bottom}` : 'reler';
-    lines.push(`- id=${l.id} "${l.name}" ${l.kind ?? ''} bounds=${b}`);
+    return `- id=${l.id} "${l.name}" ${l.kind ?? ''} bounds=${b}`;
+  });
+  if (list.length > MAX_LAYERS) lines.push(`- (+${list.length - MAX_LAYERS} camadas no estado.json)`);
+  return lines;
+}
+
+function summarizeState(state) {
+  if (state?.pecas && typeof state.pecas === 'object') {
+    const ids = Object.keys(state.pecas);
+    if (!ids.length) return null;
+    const lines = [`Peça ativa: ${state.ativa ?? '?'}`];
+    for (const id of ids) {
+      const p = state.pecas[id] ?? {};
+      lines.push(`### ${id}${id === state.ativa ? ' (ativa)' : ''}`);
+      if (p.doc) lines.push(docLine(p.doc));
+      if (Array.isArray(p.pranchetas) && p.pranchetas.length) lines.push(`Pranchetas: ${p.pranchetas.map((a) => `${a.nome}=id${a.id ?? '?'}`).join(' ')}`);
+      if (id === state.ativa) lines.push(...layerLines(p.layers));
+    }
+    return lines.join('\n');
   }
-  if (layers.length > MAX_LAYERS) lines.push(`- (+${layers.length - MAX_LAYERS} camadas no estado.json)`);
+  if (!state?.doc) return null;
+  return [docLine(state.doc), ...layerLines(state.layers)].join('\n');
+}
+
+function summarizePecas(pecas) {
+  if (!Array.isArray(pecas) || !pecas.length) return null;
+  const n = (t) => pecas.filter((p) => p.tipo === t).length;
+  const lines = [`${n('post')} posts + ${n('story')} stories = ${pecas.length} PSDs`];
+  for (const p of pecas) {
+    const tipo = p.tipo === 'post' ? (p.modelo === 'carrossel' ? `carrossel ${p.paginas} folhas` : 'post único') : `story ${p.cenario === 'capa' ? `só capa + CTA${p.cta ? ` "${p.cta}"` : ' (FALTA CTA)'}` : `feed inteiro (${p.paginas} telas)`}`;
+    lines.push(`- ${p.id}: ${tipo} ${p.W}x${p.H} [${p.status}]`);
+  }
   return lines.join('\n');
 }
 
@@ -58,6 +89,11 @@ function build(root, input = {}) {
 
   const parts = [`# Contexto do harness (hook session-handoff)\nID desta sessão: ${sessionId}`];
   if (perfil) parts.push(`Perfil do usuário: bastidores=${perfil.bastidores === true}`);
+  let metodo = readText(path.join(ws, 'metodo.md'));
+  if (metodo && metodo.trim()) {
+    if (metodo.length > MAX_METODO_CHARS) metodo = metodo.slice(0, MAX_METODO_CHARS) + '\n[...cortado — enxugar o metodo.md]';
+    parts.push('## Método do designer (workspace/metodo.md)\n' + metodo.trim());
+  }
 
   const meta = slug ? readJson(path.join(pautasDir, slug, 'pauta.json')) : null;
   if (meta) {
@@ -80,9 +116,11 @@ function build(root, input = {}) {
         parts.push(`## Dossiê do cliente (${meta.cliente})${aviso}\n` + dossie.trim());
       }
     }
+    const pecas = summarizePecas(meta.pecas);
+    parts.push('## Peças\n' + (pecas ?? '(plano de peças não feito — coletar posts, tipos, cenário dos stories e textos: skill ps-pauta)'));
     const state = summarizeState(readJson(path.join(dir, 'estado.json')));
     if (state) parts.push('## Estado em cache\n' + state);
-    parts.push('Confirme com o usuário se o arquivo aberto no Photoshop ainda é o desta pauta antes da próxima etapa. Assunto de outra pauta → lembrar de abrir uma sessão nova.');
+    parts.push('Confirme com o usuário qual peça está aberta no Photoshop antes da próxima etapa. Assunto de outra pauta → lembrar de abrir uma sessão nova.');
   } else {
     const abertas = openPautas(pautasDir).slice(0, MAX_PAUTAS);
     const lista = abertas.length
@@ -106,4 +144,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { build, summarizeState };
+module.exports = { build, summarizeState, summarizePecas };

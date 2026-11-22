@@ -46,20 +46,19 @@ export function align({ W, H, frame, bounds, edge, margin = 0 }) {
   }
 }
 
-export function carrossel({ W, H, folhas, margem = 0 }) {
+export function pranchetas({ W, H, n = 1, gap = 100, margem = 0 }) {
   const w = num(W, 'W');
   const h = num(H, 'H');
-  const n = num(folhas, 'folhas');
+  const q = num(n, 'n');
+  const g = num(gap, 'gap');
   const m = num(margem, 'margem');
-  if (n < 2 || !Number.isInteger(n)) throw new Error('--folhas deve ser inteiro >= 2');
+  if (q < 1 || !Number.isInteger(q)) throw new Error('--n deve ser inteiro >= 1');
   return {
-    prancheta: { W: w * n, H: h },
-    folhas: Array.from({ length: n }, (_, i) => ({
-      n: i + 1,
-      frame: `${i * w},0,${(i + 1) * w},${h}`,
-      conteudo: `${i * w + m},${m},${(i + 1) * w - m},${h - m}`,
-    })),
-    guias: Array.from({ length: n - 1 }, (_, i) => (i + 1) * w),
+    canvas: { W: q * w + (q - 1) * g, H: h },
+    pranchetas: Array.from({ length: q }, (_, i) => {
+      const left = i * (w + g);
+      return { n: i + 1, frame: `${left},0,${left + w},${h}`, conteudo: `${left + m},${m},${left + w - m},${h - m}` };
+    }),
   };
 }
 
@@ -104,7 +103,7 @@ export function fit({ w, h, max = 800 }) {
   return { width: Math.max(1, round(W * k)), height: Math.max(1, round(H * k)), scale: Math.round(k * 10000) / 10000 };
 }
 
-const OPS = { center, align, 'move-to': moveTo, grid, distribute, fit, carrossel };
+const OPS = { center, align, 'move-to': moveTo, grid, distribute, fit, pranchetas };
 
 function parseArgs(argv) {
   const args = {};
@@ -119,8 +118,8 @@ function parseArgs(argv) {
 const USAGE = `uso: node scripts/geo.mjs <op> [--chave valor]
   center     (--W --H | --frame l,t,r,b) --bounds l,t,r,b [--axis x|y|both]   -> {dx,dy}
   align      (--W --H | --frame l,t,r,b) --bounds l,t,r,b --edge left|right|top|bottom [--margin]   -> {dx,dy}
-  carrossel  --W --H --folhas N [--margem]                 -> {prancheta,folhas[{n,frame,conteudo}],guias}
-             (W,H = tamanho de UMA folha; --frame da folha no center/align posiciona dentro dela)
+  pranchetas --W --H [--n 1] [--gap 100] [--margem]       -> {canvas,pranchetas[{n,frame,conteudo}]}
+             (W,H = tamanho de UMA página; uma prancheta por página, lado a lado; --frame dela no center/align)
   move-to    --bounds l,t,r,b [--x] [--y]                  -> {dx,dy}
   grid       --W --cols [--gutter] [--margin]              -> {col,xs}
   distribute --start --end --sizes s1,s2,...               -> {gap,positions}

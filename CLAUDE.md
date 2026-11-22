@@ -69,7 +69,7 @@ Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nun
 1. **Uma pauta = uma sessão.** Sessão sem pauta → skill `ps-pauta` antes de qualquer trabalho.
 2. **Sempre lembre** de abrir conversa nova ao encerrar a pauta, ao pedir pauta nova ou quando o assunto for de outra pauta.
 3. **Fim de macro-etapa** → `ps-handoff` e sugestão de compactar com frase pronta.
-4. **Retomada é automática** (hook `SessionStart`). Confirme se o arquivo aberto no Photoshop é o da pauta.
+4. **Retomada é automática** (hook `SessionStart`). Confirme qual peça está aberta no Photoshop.
 5. PSD e exportações **só** na pasta de saída da pauta (`Documentos/AI Designer/<slug>/`), nunca no repositório.
 6. Reconhecimento sempre em subagente Haiku (`ps-scout`); paralelo só para leitura.
 
@@ -77,9 +77,16 @@ Detalhe: `.claude/policies/sessao.md`. O usuário **só consome** o harness: nun
 
 Detalhe: `.claude/policies/pecas.md`.
 
-1. A pauta chega com **textos do post** e **características esperadas** → registre no Briefing do handoff, textos **literais**.
-2. **Carrossel = um único PSD com uma única prancheta (Artboard de verdade)**, folhas lado a lado (`geo.mjs carrossel`). Nunca um arquivo ou uma prancheta por folha.
-3. **Entrega do carrossel:** o PSD + **uma imagem por folha** (`scripts/exportar.mjs`).
+1. **Uma pauta tem várias peças.** O designer diz quantos posts e de que tipo (único ou carrossel com N folhas). Plano das peças: `node scripts/pecas.mjs plano`.
+2. **Todo post tem story** (peça separada). Confirme com o designer, post a post: **feed inteiro** (todas as páginas, só no tamanho story) ou **só a capa + CTA** (CTA vem do designer). Nunca presuma.
+3. **Um PSD por peça** (6 posts + 6 stories = 12 PSDs). **Uma prancheta (Artboard de verdade) por página** — cada folha do carrossel e cada tela do story têm a sua. Nunca o carrossel inteiro numa prancheta.
+4. Textos **literais** no Briefing do handoff, por peça e página.
+5. Story nasce do post aprovado (cópia), nunca do zero; o PSD do post não é alterado.
+6. **Entrega:** PSD de cada peça + **uma imagem por prancheta** (`scripts/exportar.mjs`).
+
+## Método do designer (mandato)
+
+Jeitos de fazer (ex.: adaptar a arte do feed para o story) **são ensinados pelo designer, nunca presumidos**. Procure em `workspace/metodo.md` e nos Aprendizados do dossiê (o hook carrega). Não achou → pergunte. Ensinou → registre na hora (cliente → dossiê; geral → `metodo.md`) e não pergunte de novo.
 
 ## Clientes (mandato)
 
@@ -105,9 +112,9 @@ Detalhe: skill `ps-cliente`.
 - `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-workflow`, `ps-plan`, `ps-visual-check`, `ps-handoff`.
 - `.claude/hooks/` — `batchplay-guard` (allowlist de `_obj` por agente), `session-handoff` (retomada automática). Self-test: `node .claude/hooks/<nome>.selftest.cjs`.
 - `scripts/setup/` — `doctor.mjs` (diagnóstico), `install.mjs` (instalação/reparo). `setup/` — versão travada do adb-mcp e pacote do plugin (gerado pelo UXP Developer Tool). `vendor/` — adb-mcp baixado (ignorado).
-- `scripts/` — `cliente.mjs`, `pauta.mjs`, `geo.mjs`, `exportar.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
+- `scripts/` — `cliente.mjs`, `pauta.mjs`, `pecas.mjs`, `geo.mjs`, `exportar.mjs`, `recipe.mjs`, `preview.mjs`, `recipes/`. Self-tests: `node scripts/<nome>.selftest.mjs`.
 - `actions/` — Actions nativas (`.atn` + registro).
 - `templates/` — modelos (handoff de pauta, dossiê e identidade de cliente, formatos/grids).
-- `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `sessoes.json`, `clientes/<slug>/` (`cliente.json`, `dossie.md`, `identidade.json`, `referencias/`, `assets/`), `pautas/<slug>/` (`pauta.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.
+- `workspace/` — dados do usuário (ignorado pelo git): `perfil.json`, `metodo.md` (método aprendido do designer), `sessoes.json`, `clientes/<slug>/` (`cliente.json`, `dossie.md`, `identidade.json`, `referencias/`, `assets/`), `pautas/<slug>/` (`pauta.json` com a lista de peças, `pedido-pecas.json`, `handoff.md`, `estado.json`, `etapas/`). `<pauta>` nos documentos = `workspace/pautas/<slug>`.
 - Saídas (PSD/exportações): `Documentos/AI Designer/<slug>/` — fora do repositório.
 - `README.md` — guia do usuário. `docs/setup-adb-mcp.md` — instalação técnica. `docs/manutencao.md` — para quem mantém.

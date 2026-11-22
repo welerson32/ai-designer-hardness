@@ -1,0 +1,11 @@
+{
+  "description": "Apaga a camada, grupo ou prancheta indicada. Uso: story só-capa — apagar as pranchetas das folhas 2..N na cópia do post.",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int" },
+  "commands": [
+    { "_obj": "delete", "_target": [ { "_ref": "layer", "_id": "{{layerId}}" } ] }
+  ],
+  "returns": "descriptor vazio",
+  "notes": "Só na cópia (PSD do story) — nunca no PSD do post.",
+  "validated": false
+}

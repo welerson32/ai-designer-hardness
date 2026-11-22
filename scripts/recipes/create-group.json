@@ -1,5 +1,5 @@
 {
-  "description": "Cria um grupo de camadas vazio acima da camada selecionada (com a prancheta selecionada, o grupo nasce dentro dela). Carrossel: folha-01, folha-02…, continuo.",
+  "description": "Cria um grupo de camadas vazio acima da camada selecionada (com a prancheta selecionada, o grupo nasce dentro dela).",
   "server": "photoshop-bp",
   "params": { "name": "string" },
   "commands": [

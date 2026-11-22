@@ -1,36 +1,67 @@
 # Peças e entrega
 
-## Entrada da pauta
+## Modelo (regra fixa)
 
-O designer recebe a pauta com **os textos do post** e **as características esperadas**. Tudo isso vai para o `handoff.md` da pauta, seção **Briefing**:
+- **Uma pauta tem várias peças.** O designer diz no início quantos posts e de que tipo (post único ou carrossel com N folhas).
+- **Todo post tem story.** Post e story são **peças separadas**.
+- **Um PSD por peça.** 6 posts + 6 stories = 12 PSDs (`post-01.psd`, `story-01.psd`…), na pasta de saída da pauta.
+- **Uma prancheta (Artboard de verdade) por página**, lado a lado no PSD da peça:
+  - post único → 1 prancheta (`folha-01`);
+  - carrossel de N folhas → N pranchetas (`folha-01` … `folha-NN`). **Nunca** o carrossel inteiro numa prancheta só;
+  - story → uma prancheta por tela (`tela-01` …), 1080x1920.
 
-- **Textos: copiados literalmente**, folha por folha quando for carrossel. Nunca reescreva, resuma ou corrija sem pedido — divergência de texto é erro de entrega.
-- **Características:** formato, número de folhas, tom, elementos obrigatórios, restrições.
-- Faltou algo para começar (formato, nº de folhas, texto de alguma folha) → pergunte antes de abrir o Photoshop.
+## Stories — confirmar o cenário com o designer, post a post
 
-## Post único
+1. **Feed inteiro** (`feed`): o story repete todas as páginas do post, idênticas, só no tamanho de story. Carrossel de 5 folhas → story com 5 telas.
+2. **Só a capa** (`capa`): o story tem 1 tela com a capa (folha 1) no tamanho de story **+ o CTA** que o designer passar. Sem o CTA, a peça não fecha — pergunte.
 
-Um PSD na pasta de saída da pauta, no formato definido (`templates/formatos.json` + dossiê do cliente).
+Nunca presuma o cenário: pergunte para cada post (ou "todos iguais?").
 
-## Carrossel — uma prancheta, um PSD (regra fixa)
+## Abertura da pauta (antes de abrir o Photoshop)
 
-- **Um único arquivo PSD** com **uma única prancheta**, com as folhas lado a lado. **Nunca** um arquivo por folha, nunca uma prancheta por folha.
-- **Prancheta de verdade (Artboard)**, não um documento comum. Tamanho: `largura da folha × nº de folhas` por `altura da folha`. Calcule com `node scripts/geo.mjs carrossel --W <folha W> --H <folha H> --folhas <N> --margem <m>` → prancheta, `frame` e `conteudo` (área útil) de cada folha, posições das guias.
-- **Montagem (primeiro lote da pauta):**
-  1. tool `create_document` com o tamanho total da prancheta;
-  2. receita `create-artboard` (nome `carrossel`, retângulo `0,0,<prancheta W>,<H>`);
-  3. receita `add-guide` (vertical) em cada posição de `guias`;
-  4. com a prancheta selecionada, receita `create-group` para `folha-01` … `folha-NN` (e `continuo`, se houver elemento atravessando folhas);
-  5. scout registra no `estado.json` o `doc.id`, a prancheta e os grupos.
-- **Um grupo por folha:** `folha-01`, `folha-02`… Elementos que atravessam a divisão ficam em `continuo`.
-- Posicionar dentro de uma folha: `center`/`align` com `--frame` da folha (não com a prancheta inteira).
-- Texto e elemento importante **nunca em cima da divisão** entre folhas — respeitar a área `conteudo`.
+1. Colete: quantidade e tipo de cada post, nº de folhas, formato, cenário do story de cada post (e CTA, se `capa`), **textos literais** página por página, características esperadas.
+2. Grave o pedido em `<pauta>/pedido-pecas.json` e rode `node scripts/pecas.mjs plano <slug> --pedido <pauta>/pedido-pecas.json` — gera a lista de peças com tamanhos, pranchetas e frames no `pauta.json`.
+3. Mostre ao designer a lista em linguagem de design ("3 posts: 1 carrossel de 5 folhas e 2 posts únicos; stories: …") e confirme.
+4. Textos: **copiados literalmente** no Briefing do handoff, por peça e página. Nunca reescreva, resuma ou corrija sem pedido.
+
+Andamento por peça: `node scripts/pecas.mjs status <slug> <peca> pendente|montando|aprovada|exportada`. CTA que chegar depois: `node scripts/pecas.mjs cta <slug> <story-NN> --texto "..."`.
+
+## Montagem de um post
+
+Dados da peça: `node scripts/pecas.mjs ver <slug> <post-NN>` (canvas, `frame` e `conteudo` de cada prancheta).
+
+1. tool `create_document` com o tamanho de **uma página** (`W`×`H`);
+2. receita `create-artboard` para cada prancheta (`nome`, `frame`);
+3. scout registra no `estado.json` a peça, o `doc.id` e o ID de cada prancheta;
+4. salvar já como `<saida>/<post-NN>.psd`.
+
+- Posicionar dentro de uma página: `center`/`align` com `--frame` da prancheta (nunca o canvas todo).
+- Texto e elemento importante dentro da área `conteudo`.
+- Elemento que atravessa folhas (continuidade do carrossel) → uma cópia em cada prancheta, recortada pela própria prancheta.
+
+## Montagem de um story (depois do post aprovado)
+
+O story nasce **do post aprovado**, nunca do zero:
+
+1. selecione o PSD do post → receita `duplicate-document` (nome `story-NN`);
+2. cenário `capa` → receita `delete-layer` nas pranchetas `folha-02` … `folha-NN`;
+3. receita `resize-artboard` em cada prancheta para o `frame` da tela correspondente (`pecas.mjs ver <slug> <story-NN>`) e `rename-layer` de `folha-NN` para `tela-NN`;
+4. **adaptação do conteúdo ao formato story → método do designer** (ver abaixo);
+5. cenário `capa` → aplicar o CTA (texto literal);
+6. salvar como `<saida>/<story-NN>.psd`. O PSD do post nunca é alterado.
+
+## Método do designer (aprendido, não presumido)
+
+Como adaptar a arte ao story (fundo, reposição do conteúdo, zona segura) e outros "jeitos de fazer" **são ensinados pelo designer**:
+
+- Antes de adaptar, procure o método em `workspace/metodo.md` e nos **Aprendizados** do dossiê do cliente (o hook já carrega os dois).
+- Não achou → pergunte ao designer como ele faz. Não invente.
+- Ensinou → registre na hora: vale para o cliente → **Aprendizados** do dossiê; vale para o trabalho dele em geral → `workspace/metodo.md` (seção por assunto, frases curtas e operacionais). Confirme numa linha: "Anotado, faço assim daqui pra frente."
+- Nunca pergunte de novo o que já está registrado.
 
 ## Entrega
 
-- **PSD:** `<slug-da-pauta>.psd` na pasta de saída da pauta (`save_document_as`, tipo `PSD`).
-- **Carrossel — uma imagem por folha**, além do PSD:
-  `node scripts/exportar.mjs --slug <slug> --saida <pasta de saída> --doc <doc.id> --W <folha W> --H <folha H> --folhas <N> [--tipo jpg|png] --arquivo <pauta>/etapas/90-exportar-folhas.json`
-  e aplique o lote com o `ps-operator`. Para cada folha: seleciona o PSD → duplica → recorta a folha → salva `<slug>-folha-NN.<ext>` → fecha a cópia. O PSD original não é alterado.
-- Formato padrão `jpg`; `png` se o designer pedir (transparência, máxima qualidade).
-- Ao terminar, diga onde estão os arquivos: "PSD e as N imagens estão em Documentos › AI Designer › <pasta>."
+- PSD de cada peça na pasta de saída da pauta (`save_document_as`, tipo `PSD`).
+- **Uma imagem por prancheta:** `node scripts/exportar.mjs <slug> <peca> --doc <doc.id> [--tipo jpg|png]` → lote em `<pauta>/etapas/90-exportar-<peca>.json`, aplicado pelo `ps-operator`. Nomes: `post-01.jpg` (página única), `post-01-folha-02.jpg`, `story-01-tela-03.jpg`. O PSD não é alterado.
+- Formato padrão `jpg`; `png` se o designer pedir.
+- Ao terminar cada peça: `status … exportada`. Ao terminar a pauta, diga onde estão: "Os 12 PSDs e as imagens estão em Documentos › AI Designer › <pasta>."

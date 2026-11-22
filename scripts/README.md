@@ -3,13 +3,14 @@
 O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aqui ficam:
 
 - **`pauta.mjs`** / **`cliente.mjs`** — pautas (nova, listar, vincular, saída, encerrar) e clientes (nova, listar, checar lacunas, concluir).
-- **`geo.mjs`** — cálculo de layout determinístico (`center`, `align`, `move-to`, `grid`, `distribute`). `node scripts/geo.mjs` sem argumentos mostra o uso.
-- **`exportar.mjs`** — gera o lote que exporta cada folha do carrossel como imagem separada.
+- **`pecas.mjs`** — plano das peças da pauta (posts + stories, 1 PSD por peça, 1 prancheta por página), andamento e CTA.
+- **`geo.mjs`** — cálculo de layout determinístico (`center`, `align`, `move-to`, `grid`, `distribute`, `pranchetas`). `node scripts/geo.mjs` sem argumentos mostra o uso.
+- **`exportar.mjs`** — gera o lote que exporta uma imagem por prancheta da peça.
 - **`recipe.mjs`** — monta comandos a partir das receitas: `node scripts/recipe.mjs <receita> k=v ...` ou `--lote <arquivo>`.
 - **`preview.mjs`** — chamadas do preview barato (duplicar → recortar → ≤ 800px → capturar → fechar cópia). Uso exclusivo do `ps-art-director`.
 - **`recipes/`** — receitas batchPlay enviadas por `call_batch_play_command` (servidor `photoshop-bp`).
 
-Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `geo`, `exportar`, `recipe`, `preview`).
+Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `pecas`, `geo`, `exportar`, `recipe`, `preview`).
 
 ## Formato de receita
 
@@ -48,6 +49,8 @@ Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `geo`, `expo
 | `resize-image` | redução (só na cópia) | não |
 | `close-document` | fechar cópia por nome, sem salvar | não |
 | `select-document` | ativar documento pelo ID | não |
-| `create-artboard` | criar prancheta (carrossel: uma só, tamanho total) | não |
+| `create-artboard` | criar prancheta (uma por página) | não |
+| `resize-artboard` | redimensionar prancheta (post → story) | não |
+| `delete-layer` | apagar camada/prancheta (story só-capa, na cópia) | não |
 | `add-guide` | guia vertical/horizontal | não |
-| `create-group` | grupo de camadas (folha-NN, continuo) | não |
+| `create-group` | grupo de camadas | não |

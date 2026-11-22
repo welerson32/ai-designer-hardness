@@ -65,7 +65,7 @@ export function nova({ nome, cliente = '', sessao, root = ROOT, saidaBase = docu
 
   const clienteSlug = cliente ? slugify(cliente) : '';
   writeJson(join(pasta, 'pauta.json'), { slug, nome, cliente: clienteSlug, status: 'aberta', criadaEm: new Date().toISOString(), saida });
-  writeJson(join(pasta, 'estado.json'), { version: 1 });
+  writeJson(join(pasta, 'estado.json'), { version: 2, ativa: null, pecas: {} });
   const tpl = existsSync(p.template) ? readFileSync(p.template, 'utf8') : '# Pauta — {{nome}}\n';
   writeFileSync(join(pasta, 'handoff.md'), tpl
     .replaceAll('{{nome}}', nome)

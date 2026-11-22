@@ -1,54 +1,64 @@
 #!/usr/bin/env node
 import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { carrossel } from './geo.mjs';
+import { obter } from './pecas.mjs';
+import { paths } from './pauta.mjs';
 
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TIPOS = { jpg: 'JPG', png: 'PNG' };
 
-export function loteExportacao({ slug, saida, doc, W, H, folhas, tipo = 'jpg', nome = '90-exportar-folhas' }) {
-  if (!slug || !saida || doc === undefined) throw new Error('--slug, --saida e --doc obrigatórios');
+export function nomeArquivo(peca, prancheta, ext) {
+  return peca.pranchetas.length === 1 ? `${peca.id}.${ext}` : `${peca.id}-${prancheta.nome}.${ext}`;
+}
+
+export function loteExportacao({ saida, doc, peca, tipo = 'jpg' }) {
+  if (!saida || doc === undefined || !peca) throw new Error('saida, --doc e peça obrigatórios');
   const docId = Number(doc);
   const ext = String(tipo).toLowerCase();
   if (!TIPOS[ext]) throw new Error('--tipo deve ser jpg ou png');
-  const { folhas: lista } = carrossel({ W, H, folhas, margem: 0 });
 
   const steps = [];
-  for (const f of lista) {
-    const num = String(f.n).padStart(2, '0');
-    const copia = `claude-export-${num}`;
-    const [left, top, right, bottom] = f.frame.split(',').map(Number);
+  peca.pranchetas.forEach((p, i) => {
+    const copia = `claude-export-${peca.id}-${String(i + 1).padStart(2, '0')}`;
+    const [left, top, right, bottom] = p.frame.split(',').map(Number);
     steps.push(
       { recipe: 'select-document', params: { docId } },
       { recipe: 'duplicate-document', params: { name: copia } },
       { recipe: 'crop-document', params: { left, top, right, bottom } },
-      { tool: 'save_document_as', args: { file_path: join(saida, `${slug}-folha-${num}.${ext}`), file_type: TIPOS[ext] } },
+      { tool: 'save_document_as', args: { file_path: join(saida, nomeArquivo(peca, p, ext)), file_type: TIPOS[ext] } },
       { recipe: 'close-document', params: { name: copia } },
     );
-  }
+  });
   steps.push({ recipe: 'select-document', params: { docId } });
-  return { name: nome, steps };
+  return { name: `90-exportar-${peca.id}`, steps };
+}
+
+export function gerar({ slug, peca, doc, tipo, root = ROOT }) {
+  const { pauta, peca: p } = obter({ slug, peca, root });
+  const lote = loteExportacao({ saida: pauta.saida, doc, peca: p, tipo });
+  const arquivo = join(paths(root).pautas, slug, 'etapas', `${lote.name}.json`);
+  writeFileSync(arquivo, JSON.stringify(lote, null, 2) + '\n');
+  return { arquivo, peca: p.id, imagens: p.pranchetas.length, passos: lote.steps.length };
 }
 
 function parseArgs(argv) {
-  const a = {};
-  for (let i = 0; i < argv.length; i += 2) {
-    if (!argv[i].startsWith('--')) throw new Error(`argumento inesperado: ${argv[i]}`);
-    a[argv[i].slice(2)] = argv[i + 1];
+  const out = { _: [] };
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i].startsWith('--')) out[argv[i].slice(2)] = argv[++i];
+    else out._.push(argv[i]);
   }
-  return a;
+  return out;
 }
 
-const USAGE = `uso: node scripts/exportar.mjs --slug <slug> --saida <pasta> --doc <doc.id do estado.json> --W <folha W> --H <folha H> --folhas N [--tipo jpg|png] --arquivo <pauta>/etapas/90-exportar-folhas.json
-gera o lote que exporta cada folha do carrossel como imagem separada (aplicar com recipe.mjs --lote / ps-operator).`;
+const USAGE = `uso: node scripts/exportar.mjs <slug> <peca> --doc <id do PSD da peça> [--tipo jpg|png]
+gera <pauta>/etapas/90-exportar-<peca>.json: uma imagem por prancheta, na pasta de saída (aplicar com ps-operator).`;
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   try {
     const a = parseArgs(process.argv.slice(2));
-    if (!a.arquivo) throw new Error(USAGE);
-    const lote = loteExportacao(a);
-    writeFileSync(a.arquivo, JSON.stringify(lote, null, 2) + '\n');
-    process.stdout.write(JSON.stringify({ arquivo: a.arquivo, folhas: Number(a.folhas), passos: lote.steps.length }) + '\n');
+    if (!a._[0] || !a._[1] || a.doc === undefined) throw new Error(USAGE);
+    process.stdout.write(JSON.stringify(gerar({ slug: a._[0], peca: a._[1], doc: a.doc, tipo: a.tipo })) + '\n');
   } catch (e) {
     process.stderr.write(`${e.message}\n`);
     process.exit(1);

@@ -50,6 +50,38 @@ try {
   assert.match(out, /bastidores=true/);
   assert.doesNotMatch(out, /Sessão sem pauta/);
 
+  assert.match(out, /plano de peças não feito/);
+  assert.doesNotMatch(out, /Método do designer/);
+
+  write('workspace/metodo.md', '## Feed para story\n- Fundo: estender a cor');
+  write('workspace/pautas/2026-11-19-post/pauta.json', {
+    slug: '2026-11-19-post', nome: 'Post', cliente: 'acme', status: 'aberta', criadaEm: '2026-11-19T10:00:00Z', saida: 'C:/x',
+    pecas: [
+      { id: 'post-01', tipo: 'post', modelo: 'carrossel', paginas: 5, W: 1080, H: 1350, status: 'aprovada' },
+      { id: 'story-01', tipo: 'story', cenario: 'feed', paginas: 5, W: 1080, H: 1920, status: 'pendente' },
+      { id: 'post-02', tipo: 'post', modelo: 'unico', paginas: 1, W: 1080, H: 1350, status: 'pendente' },
+      { id: 'story-02', tipo: 'story', cenario: 'capa', cta: null, paginas: 1, W: 1080, H: 1920, status: 'pendente' },
+    ],
+  });
+  write('workspace/pautas/2026-11-19-post/estado.json', {
+    version: 2,
+    ativa: 'story-01',
+    pecas: {
+      'post-01': { doc: { id: 101, title: 'post-01.psd', width: 1080, height: 1350 }, pranchetas: [{ nome: 'folha-01', id: 5 }], layers: [{ id: 50, name: 'nao-mostrar', kind: 'text' }] },
+      'story-01': { doc: { id: 202, title: 'story-01.psd', width: 1080, height: 1920 }, layers: [{ id: 70, name: 'titulo-story', kind: 'text', bounds: null }] },
+    },
+  });
+  out = build(root, { session_id: 's1' });
+  assert.match(out, /## Método do designer \(workspace\/metodo\.md\)\n## Feed para story/);
+  assert.match(out, /2 posts \+ 2 stories = 4 PSDs/);
+  assert.match(out, /- post-01: carrossel 5 folhas 1080x1350 \[aprovada\]/);
+  assert.match(out, /- story-01: story feed inteiro \(5 telas\)/);
+  assert.match(out, /- story-02: story só capa \+ CTA \(FALTA CTA\)/);
+  assert.match(out, /Peça ativa: story-01/);
+  assert.match(out, /Pranchetas: folha-01=id5/);
+  assert.match(out, /id=70 "titulo-story" text bounds=reler/);
+  assert.doesNotMatch(out, /nao-mostrar/);
+
   out = build(root, { session_id: 'outra' });
   assert.match(out, /Sessão sem pauta/);
 

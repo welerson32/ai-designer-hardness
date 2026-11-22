@@ -11,24 +11,31 @@
 
 ## 2. Cache `<pauta>/estado.json`
 
-Na pasta da pauta (`workspace/pautas/<slug>/`, ignorada pelo git). Escrito pelo `ps-scout`; atualizado pelo mentor após escrita de efeito previsível.
+Na pasta da pauta (`workspace/pautas/<slug>/`, ignorada pelo git). Escrito pelo `ps-scout`; atualizado pelo mentor após escrita de efeito previsível. **Uma entrada por peça** (cada peça é um PSD); `ativa` = peça em que se está trabalhando.
 
 ```json
 {
-  "version": 1,
-  "doc": { "id": 101, "title": "post-instagram.psd", "width": 1080, "height": 1350, "resolution": 72, "at": "2026-11-19T14:02:00Z" },
-  "active": { "ids": [12], "at": "2026-11-19T14:02:00Z" },
-  "layers": [
-    { "id": 12, "name": "titulo-principal", "kind": "text", "parentId": 8,
-      "bounds": { "left": 90, "top": 120, "right": 990, "bottom": 260 }, "boundsAt": "2026-11-19T14:02:00Z" }
-  ],
+  "version": 2,
+  "ativa": "post-01",
+  "pecas": {
+    "post-01": {
+      "doc": { "id": 101, "title": "post-01.psd", "width": 1080, "height": 1350, "resolution": 72, "at": "2026-11-19T14:02:00Z" },
+      "pranchetas": [ { "nome": "folha-01", "id": 5 }, { "nome": "folha-02", "id": 9 } ],
+      "active": { "ids": [12], "at": "2026-11-19T14:02:00Z" },
+      "layers": [
+        { "id": 12, "name": "titulo-principal", "kind": "text", "parentId": 5,
+          "bounds": { "left": 90, "top": 120, "right": 990, "bottom": 260 }, "boundsAt": "2026-11-19T14:02:00Z" }
+      ]
+    }
+  },
   "notes": []
 }
 ```
 
 Validade:
 
-- `doc.id` diferente do documento ativo → cache inteiro inválido.
+- Trocou de peça → mude `ativa` e selecione o PSD dela (receita `select-document` com `doc.id`) antes de escrever. Um escritor por vez, um PSD por vez.
+- `doc.id` da peça ativa diferente do documento ativo no Photoshop → cache **daquela peça** inválido.
 - `id`, `name`, `kind`, `parentId` e canvas → confiáveis enquanto o documento for o mesmo.
 - `bounds` → confiável só até a próxima escrita na camada:
   - escrita previsível (`translate_layer`, `move_layer`): o mentor **recalcula** localmente e atualiza o cache, sem reler;

@@ -1,5 +1,5 @@
 {
-  "description": "Cria uma prancheta (artboard) no documento ativo com o retângulo indicado (px). Para carrossel: uma prancheta só, do tamanho total (geo.mjs carrossel).",
+  "description": "Cria uma prancheta (artboard) no documento ativo com o retângulo indicado (px). Uma prancheta por página (folha do post ou tela do story); retângulos de pecas.mjs ver.",
   "server": "photoshop-bp",
   "params": { "name": "string", "left": "int", "top": "int", "right": "int", "bottom": "int" },
   "commands": [
