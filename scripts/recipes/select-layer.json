@@ -1,0 +1,11 @@
+{
+  "description": "Seleciona (ativa) a camada ou prancheta pelo ID. Novas camadas nascem acima/dentro da camada ativa.",
+  "server": "photoshop-bp",
+  "params": { "layerId": "int" },
+  "commands": [
+    { "_obj": "select", "_target": [ { "_ref": "layer", "_id": "{{layerId}}" } ], "makeVisible": false }
+  ],
+  "returns": "descriptor do select",
+  "notes": "2026-11-24: texto criado depois dele nasce dentro da prancheta selecionada (validado com 3 pranchetas lado a lado).",
+  "validated": true
+}

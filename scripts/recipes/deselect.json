@@ -1,0 +1,11 @@
+{
+  "description": "Remove a seleção ativa (Selecionar > Desfazer seleção). Substitui a tool clear_selection, que o plugin recusa (exige layerId).",
+  "server": "photoshop-bp",
+  "params": {},
+  "commands": [
+    { "_obj": "set", "_target": [ { "_ref": "channel", "_property": "selection" } ], "to": { "_enum": "ordinal", "_value": "none" } }
+  ],
+  "returns": "descriptor vazio",
+  "notes": "2026-11-24: tool clear_selection falha com 'selectRectangle : Could not find layerId : undefined' (o MCP original também não manda layerId).",
+  "validated": true
+}

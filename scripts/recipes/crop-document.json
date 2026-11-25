@@ -37,6 +37,6 @@
     }
   ],
   "returns": "descriptor vazio",
-  "validated": false,
-  "notes": "Não recorta documento com pranchetas (no-op). Achatar antes (tool flatten_all_layers) — exportar.mjs já faz isso na cópia."
+  "validated": true,
+  "notes": "2026-11-24: no-op em documento com pranchetas, mas funciona depois de flatten_all_layers na cópia (exportar.mjs): recorte de 3 pranchetas lado a lado validado, 1080x1350 com o conteúdo certo de cada folha."
 }

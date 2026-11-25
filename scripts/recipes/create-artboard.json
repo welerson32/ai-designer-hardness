@@ -10,16 +10,6 @@
   },
   "commands": [
     {
-      "_obj": "selectNoLayers",
-      "_target": [
-        {
-          "_ref": "layer",
-          "_enum": "ordinal",
-          "_value": "targetEnum"
-        }
-      ]
-    },
-    {
       "_obj": "make",
       "_target": [
         {
@@ -50,6 +40,6 @@
     }
   ],
   "returns": "descriptor do make",
-  "notes": "2026-11-25: versão anterior ignorava o nome e englobava a camada selecionada (fundo). Agora: desmarca camadas, cria a prancheta vazia e renomeia a recém-criada (fica selecionada). Validar no Photoshop.",
-  "validated": false
+  "notes": "2026-11-24: selectNoLayers falha (-25920 \"Cancelar seleção de camadas não disponível\"), removido. Nome e retângulo aplicados OK. Na PRIMEIRA prancheta o Plano de Fundo é engolido como \"Camada 0\" dentro dela: apagar com delete-layer (id do layers-index) antes de criar as demais; depois dela as seguintes nascem na raiz, fora da anterior.",
+  "validated": true
 }
