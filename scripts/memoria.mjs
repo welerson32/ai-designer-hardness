@@ -6,7 +6,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-export const MODELO = 'Xenova/multilingual-e5-small';
+export const MODELO = 'Xenova/multilingual-e5-base';
+export const MIN_COS = 0.815;
+const MIN_LEX = 0.34;
 export const LIB_VERSAO = '3.7.5';
 export const LIB_DIR = join(ROOT, 'vendor', 'memoria');
 const MODELOS_DIR = join(LIB_DIR, 'modelos');
@@ -186,7 +188,7 @@ export function nucleo({ cliente = '', limite = NUCLEO_MAX, root = ROOT } = {}) 
   return selecionarNucleo(carregar(root).itens, cliente, limite);
 }
 
-export async function buscar({ consulta, cliente = '', k = 6, excluirNucleo = false, excluir = [], margem = 0, root = ROOT, embed }) {
+export async function buscar({ consulta, cliente = '', k = 6, excluirNucleo = false, excluir = [], margem = 0, minimo = 0, root = ROOT, embed }) {
   const mem = carregar(root);
   const fora = new Set(excluir);
   if (excluirNucleo) for (const i of selecionarNucleo(mem.itens, cliente, NUCLEO_MAX)) fora.add(i.id);
@@ -202,10 +204,12 @@ export async function buscar({ consulta, cliente = '', k = 6, excluirNucleo = fa
     .map((i) => {
       const lex = lexical(consulta, documento(i));
       const v = qv && mem.vetores.itens[i.id];
-      const score = v ? 0.75 * cosseno(qv, v) + 0.25 * lex : lex;
-      return { ...i, score: Math.round(score * 1000) / 1000 };
+      const cos = v ? cosseno(qv, v) : 0;
+      const score = v ? 0.75 * cos + 0.25 * lex : lex;
+      return { ...i, cos, lex, score: Math.round(score * 1000) / 1000 };
     })
     .filter((i) => (qv ? true : i.score > 0))
+    .filter((i) => !minimo || !qv || i.cos >= minimo || i.lex >= MIN_LEX)
     .sort((a, b) => b.score - a.score)
     .slice(0, k);
   const corte = margem && itens.length ? itens[0].score - margem : -Infinity;
@@ -293,7 +297,7 @@ const USAGE = `uso: node scripts/memoria.mjs <comando>
   registrar --escopo execucao|cliente:<slug> --texto "<regra operacional>" [--tipo regra|conceito|preferencia]
             [--fala "<palavras do designer>"] [--termos "sinônimos,termos"] [--sempre] [--pauta <slug>] [--substitui <id>]
   reforcar <id> [--pauta <slug>]          designer corrigiu de novo algo já registrado → vira regra "sempre"
-  buscar "<consulta>" [--cliente <slug>] [--k 6] [--sem-nucleo] [--excluir id1,id2] [--margem 0.05]
+  buscar "<consulta>" [--cliente <slug>] [--k 6] [--sem-nucleo] [--excluir id1,id2] [--margem 0.05] [--minimo [cos]]
   nucleo [--cliente <slug>]               regras "sempre" (execução + cliente), no máximo ${NUCLEO_MAX}; o resto vem por busca
   listar [--cliente <slug>] [--todos]
   importar [--sem-vetor]                  traz metodo.md e Aprendizados dos dossiês (idempotente, não apaga nada)
@@ -312,11 +316,11 @@ if (isMain) {
     } else if (cmd === 'reforcar') {
       out(`reforçado: ${linha(reforcar({ id: a._[1], pauta: a.pauta ?? '' }))}`);
     } else if (cmd === 'buscar') {
-      const r = await buscar({ consulta: a._.slice(1).join(' '), cliente: a.cliente ?? '', k: Number(a.k ?? 6), excluirNucleo: a['sem-nucleo'] === true, excluir: String(a.excluir ?? '').split(',').filter(Boolean), margem: Number(a.margem ?? 0) });
+      const r = await buscar({ consulta: a._.slice(1).join(' '), cliente: a.cliente ?? '', k: Number(a.k ?? 6), excluirNucleo: a['sem-nucleo'] === true, excluir: String(a.excluir ?? '').split(',').filter(Boolean), margem: Number(a.margem ?? 0), minimo: a.minimo === true ? MIN_COS : Number(a.minimo ?? 0) });
       if (a.hook) {
         if (r.itens.length) out(['## Aprendizados relevantes para esta mensagem (memória do designer)', ...r.itens.map(linha)].join('\n'));
       } else {
-        out([`modo: ${r.modo}`, ...r.itens.map((i) => `${linha(i)} [${i.score}]`)].join('\n'));
+        out([`modo: ${r.modo}`, ...r.itens.map((i) => `${linha(i)} [score ${i.score} · cos ${Number(i.cos).toFixed(3)}]`)].join('\n'));
       }
     } else if (cmd === 'nucleo') {
       out(nucleo({ cliente: a.cliente ?? '' }).map(linha).join('\n') || '(vazio)');

@@ -1,12 +1,31 @@
 {
   "description": "Cria uma prancheta (artboard) no documento ativo com o retângulo indicado (px). Uma prancheta por página (folha do post ou tela do story); retângulos de pecas.mjs ver.",
   "server": "photoshop-bp",
-  "params": { "name": "string", "left": "int", "top": "int", "right": "int", "bottom": "int" },
+  "params": {
+    "name": "string",
+    "left": "int",
+    "top": "int",
+    "right": "int",
+    "bottom": "int"
+  },
   "commands": [
     {
+      "_obj": "selectNoLayers",
+      "_target": [
+        {
+          "_ref": "layer",
+          "_enum": "ordinal",
+          "_value": "targetEnum"
+        }
+      ]
+    },
+    {
       "_obj": "make",
-      "_target": [ { "_ref": "artboardSection" } ],
-      "name": "{{name}}",
+      "_target": [
+        {
+          "_ref": "artboardSection"
+        }
+      ],
       "artboardRect": {
         "_obj": "classFloatRect",
         "top": "{{top}}",
@@ -14,9 +33,23 @@
         "bottom": "{{bottom}}",
         "right": "{{right}}"
       }
+    },
+    {
+      "_obj": "set",
+      "_target": [
+        {
+          "_ref": "layer",
+          "_enum": "ordinal",
+          "_value": "targetEnum"
+        }
+      ],
+      "to": {
+        "_obj": "layer",
+        "name": "{{name}}"
+      }
     }
   ],
   "returns": "descriptor do make",
-  "notes": "Gravações do Alchemist às vezes incluem layerSectionStart/End; aqui omitidos. Validar se a prancheta nasce vazia ou engloba a camada selecionada.",
+  "notes": "2026-11-25: versão anterior ignorava o nome e englobava a camada selecionada (fundo). Agora: desmarca camadas, cria a prancheta vazia e renomeia a recém-criada (fica selecionada). Validar no Photoshop.",
   "validated": false
 }

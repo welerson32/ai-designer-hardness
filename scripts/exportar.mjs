@@ -25,6 +25,7 @@ export function loteExportacao({ saida, doc, peca, tipo = 'jpg' }) {
     steps.push(
       { recipe: 'select-document', params: { docId } },
       { recipe: 'duplicate-document', params: { name: copia } },
+      { tool: 'flatten_all_layers', args: { layer_name: copia } },
       { recipe: 'crop-document', params: { left, top, right, bottom } },
       { tool: 'save_document_as', args: { file_path: join(saida, nomeArquivo(peca, p, ext)), file_type: TIPOS[ext] } },
       { recipe: 'close-document', params: { name: copia } },

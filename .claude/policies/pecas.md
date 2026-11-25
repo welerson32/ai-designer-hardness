@@ -30,9 +30,9 @@ Andamento por peça: `node scripts/pecas.mjs status <slug> <peca> pendente|monta
 
 Dados da peça: `node scripts/pecas.mjs ver <slug> <post-NN>` (canvas, `frame` e `conteudo` de cada prancheta).
 
-1. tool `create_document` com o tamanho de **uma página** (`W`×`H`);
-2. receita `create-artboard` para cada prancheta (`nome`, `frame`);
-3. scout registra no `estado.json` a peça, o `doc.id` e o ID de cada prancheta;
+1. tool `create_document` com o tamanho de **uma página** (`W`×`H`). Pode voltar erro `allLocked` mesmo criando o documento, e o nome não é aplicado (fica "Sem Título-N"; o nome vem no `save_document_as`) — confira com `aplicar.mjs --tool get_documents '{}'` antes de repetir;
+2. receita `create-artboard` para cada prancheta (`nome`, `frame`) — **ainda não validada** na versão nova; confira nome e se o fundo ficou fora da prancheta;
+3. registre no `estado.json` a peça, o `doc.id` e o ID de cada prancheta (`aplicar.mjs --receita active-layers` logo após criar cada uma);
 4. salvar já como `<saida>/<post-NN>.psd`.
 
 - Posicionar dentro de uma página: `center`/`align` com `--frame` da prancheta (nunca o canvas todo).
@@ -45,7 +45,7 @@ O story nasce **do post aprovado**, nunca do zero:
 
 1. selecione o PSD do post → receita `duplicate-document` (nome `story-NN`);
 2. cenário `capa` → receita `delete-layer` nas pranchetas `folha-02` … `folha-NN`;
-3. receita `resize-artboard` em cada prancheta para o `frame` da tela correspondente (`pecas.mjs ver <slug> <story-NN>`) e `rename-layer` de `folha-NN` para `tela-NN`;
+3. redimensionar cada prancheta para o `frame` da tela correspondente (`pecas.mjs ver <slug> <story-NN>`) e `rename-layer` de `folha-NN` para `tela-NN`. **A receita `resize-artboard` está quebrada** (deixa a prancheta com altura errada): até ser corrigida, peça ao designer para ajustar o tamanho da prancheta no painel Propriedades e avise quando terminar;
 4. **adaptação do conteúdo ao formato story → método do designer** (ver abaixo);
 5. cenário `capa` → aplicar o CTA (texto literal);
 6. salvar como `<saida>/<story-NN>.psd`. O PSD do post nunca é alterado.

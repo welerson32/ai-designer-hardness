@@ -38,32 +38,27 @@ Quem pediu é o **mantenedor**, não o designer. Durante este fluxo:
 2. `node scripts/pauta.mjs nova --nome "dev-teste" --sessao <ID desta sessão>`; `pauta.mjs saida dev-teste` → pasta de saída.
 3. Pedido: 1 post `unico` `instagram-feed-retrato` + story `capa` com CTA "Saiba mais". Grave em `workspace/pautas/dev-teste/pedido-pecas.json` e rode `pecas.mjs plano`.
 
-## 2. Receitas (todas estão `validated: false`)
+## 2. Aplicação por script e receitas pendentes
 
-Para cada receita, monte com `node scripts/recipe.mjs <receita> k=v ...` e envie por `call_batch_play_command`. Confira o efeito por leitura (`get_layer_bounds`, `get_document_info`) e, onde a leitura não basta, pergunte ao mantenedor o que ele vê no Photoshop. Funcionou → marque `"validated": true` no JSON da receita. Falhou → registre descriptor e erro; não corrija sem alinhar.
+Tudo aqui via `node scripts/aplicar.mjs` (não pelo MCP). Receitas já validadas (`validated: true`) não precisam ser retestadas.
 
-Ordem (cada uma prepara a seguinte):
-
-1. `create_document` 1080x1350 (tool) → `history-snapshot` (`name=dev:inicio`).
-2. `create-artboard` com o frame do `pecas.mjs ver dev-teste post-01`.
-3. `active-layers` (selecione a prancheta antes) → ID devolvido.
-4. `layers-index` → só confira o formato e o tamanho da resposta (registre bytes aproximados); não cole o índice inteiro no relatório.
-5. Texto via `create_single_line_text_layer` (tool) → `layer-text` no ID dele.
-6. `rename-layer`, `set-opacity` (50), `set-visibility` (hide → show), `create-group`, `add-guide` (vertical 540).
-7. `move-layer` com `dy` **positivo** → confira em `get_layer_bounds` se desceu. Registre o sinal real e corrija a nota em `.claude/policies/leitura-estado.md` (seção 3). Repita com `translate_layer` (tool) e registre o sinal dele.
-8. `revert-snapshot` (`name=dev:inicio`) → documento voltou ao estado inicial?
-9. `save_document_as` PSD na pasta de saída (aprovação manual).
-10. `select-document`, `duplicate-document` (`name=story-01`), `resize-artboard`, `delete-layer`, `close-document`.
-11. `crop-document` e `resize-image` só numa cópia (`duplicate-document` antes).
-12. `play-action`: só se houver Action registrada em `actions/README.md`; senão PULADO.
+1. `aplicar.mjs --tool get_documents '{}'` e `--tool get_document_info '{}'` → conecta? A saída vem sem árvore de camadas? Registre o tamanho da saída (caracteres).
+2. `create_document` 1080x1350 via lote de 1 passo → registre se o erro `allLocked` ainda aparece e se o `aplicar` trata como `ERRO` (o documento é criado mesmo assim).
+3. **`create-artboard` (versão nova):** lote com o frame de `pecas.mjs ver <slug> post-01`. Confira: nome aplicado? Fundo ficou fora da prancheta? Outra prancheta lado a lado (frame da folha-02) também?
+4. **`group_layers`** (tool, substitui a receita removida `create-group`) com 2 camadas de texto → grupo contém as duas?
+5. **Erro detectado:** lote com `rename-layer` em `layerId` inexistente no meio → `status: ERRO`, `rollback: feito`, documento igual ao de antes?
+6. **`expect`:** lote com `move-layer` e `expect` certo → `OK`; com `expect` errado de propósito → `OK_COM_DIVERGENCIA` com o `real`.
+7. **Descriptors que faltam — gravar, não adivinhar:** para `resize-artboard` (prancheta 1080x1350 → 1080x1920 no painel Propriedades) e `add-guide`: grave uma Action fazendo a operação à mão, no painel Ações clique com o direito no passo → **Copiar como JavaScript**, cole no relatório e corrija a receita. Teste com `aplicar.mjs --receita` e marque `validated: true` só se conferir.
+8. **Exportação de carrossel** (agora achata a cópia antes de recortar): PSD com 3 pranchetas lado a lado → `exportar.mjs` + `aplicar.mjs` → 3 imagens com o conteúdo certo de cada folha?
+9. `play-action`: só se houver Action registrada em `actions/README.md`; senão PULADO.
 
 ## 3. Fluxo real de uma peça
 
-Agora como no uso diário, para medir: siga a skill `ps-plan` (planejar → `geo.mjs` → lote → `recipe.mjs --lote` → aplicar).
+Agora como no uso diário, para medir: siga a skill `ps-plan` (memória → `geo.mjs` → lote → `aplicar.mjs`).
 
-1. Etapa "layout": título centralizado na prancheta com margem 90px, subtítulo 24px abaixo, um retângulo/forma de fundo. Um lote só.
-2. Confira `expect` × `get_layer_bounds` real. Divergência → registre os dois valores.
-3. Lote propositalmente quebrado (receita com `layerId` inexistente no meio) → o rollback por `revert-snapshot` funcionou?
+1. Etapa "layout": título centralizado na prancheta com margem 90px, subtítulo 24px abaixo, um retângulo/forma de fundo. Um lote só, uma chamada de `aplicar.mjs`.
+2. `expect` conferido pelo próprio `aplicar` → bateu?
+3. Compare com a rodada anterior: chamadas de ferramenta e tokens da etapa (seção 4).
 4. `ps-scout`: peça duas buscas (nome exato + tipo `text`) numa chamada. Registre tempo e se o `batchplay-guard` deixou passar só `get`/`multiGet`.
 5. `ps-art-director`: preview da prancheta com o critério "título legível e centralizado". Registre se a cópia `claude-preview` foi fechada e se o guard barrou algo.
 6. Exportação: `node scripts/exportar.mjs dev-teste post-01 --doc <id>` e aplique. Confira os arquivos na pasta de saída.
@@ -75,13 +70,9 @@ Agora como no uso diário, para medir: siga a skill `ps-plan` (planejar → `geo
 2. `/context` → registre o peso de system prompt, CLAUDE.md, ferramentas MCP e skills.
 3. Anote quantas telas de aprovação apareceram e em quais ferramentas (candidatas a liberar no `settings.json`).
 
-## 5. Insumo para aplicar lote por script (próxima etapa)
+## 5. Calibrar a memória
 
-Leia `vendor/adb-mcp/mcp/` (cliente socket usado por `ps-mcp.py`/`ps-batch-play.py`) e o proxy (`vendor/adb-mcp/adb-proxy-socket/` ou equivalente). Registre:
-
-- biblioteca e versão do socket.io; URL/porta; nome do evento de envio e de resposta;
-- formato exato do payload de um `batchPlay` e de uma tool de alto nível (ex.: `create_single_line_text_layer`), e da resposta (sucesso e erro);
-- timeout e como uma resposta é casada com o pedido (id?).
+Com os clientes reais importados: 5 perguntas que **têm** resposta na memória e 3 que **não têm** (ex.: "onde vai o logo" num cliente sem aprendizado de logo), cada uma com `node scripts/memoria.mjs buscar "<pergunta>" --cliente <slug> --k 3`. Registre o `cos` do item certo e o maior `cos` das perguntas sem resposta. O corte do hook é `MIN_COS = 0.815` em `scripts/memoria.mjs`: ajuste se os números pedirem.
 
 ## 6. Fechamento
 

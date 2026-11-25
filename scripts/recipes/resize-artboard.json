@@ -1,11 +1,22 @@
 {
   "description": "Redefine o retângulo (px) da prancheta indicada. Usado para levar a página do post (1080x1350) ao story (1080x1920) mantendo a posição horizontal.",
   "server": "photoshop-bp",
-  "params": { "layerId": "int", "left": "int", "top": "int", "right": "int", "bottom": "int" },
+  "params": {
+    "layerId": "int",
+    "left": "int",
+    "top": "int",
+    "right": "int",
+    "bottom": "int"
+  },
   "commands": [
     {
       "_obj": "editArtboardEvent",
-      "_target": [ { "_ref": "layer", "_id": "{{layerId}}" } ],
+      "_target": [
+        {
+          "_ref": "layer",
+          "_id": "{{layerId}}"
+        }
+      ],
       "artboard": {
         "_obj": "artboard",
         "artboardRect": {
@@ -20,6 +31,6 @@
     }
   ],
   "returns": "descriptor vazio",
-  "notes": "As camadas não mudam de posição absoluta; o reposicionamento do conteúdo segue o método do designer (workspace/metodo.md ou dossiê). Validar se changeSizes=1 é o código certo para 'tamanho' no Photoshop atual.",
+  "notes": "2026-11-25: changeSizes=1 levou 1350 para 2378 de altura; changeSizes=2 não mudou nada. NÃO USAR até gravar o descriptor real (Actions › Copiar como JavaScript), ver dev-diagnostico.",
   "validated": false
 }

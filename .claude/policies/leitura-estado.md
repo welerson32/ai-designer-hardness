@@ -3,7 +3,7 @@
 ## 1. Sem dump de camadas
 
 - `mcp__photoshop__get_layers` é **negado** em `.claude/settings.json` (devolve a árvore inteira, com estilo de texto).
-- Leitura: canvas (`get_document_info`) e seleção (`active-layers`) a thread principal lê direto; busca por nome/tipo só pelo `ps-scout`:
+- Leitura: canvas (`aplicar.mjs --tool get_document_info`) e seleção (`aplicar.mjs --receita active-layers`) a thread principal lê direto; busca por nome/tipo só pelo `ps-scout`:
   - tool `get_document_info` — canvas em px e resolução.
   - receita `active-layers` — IDs selecionados.
   - receita `layers-index` — índice compacto (nome, id, tipo, bounds sem efeitos, visível) de todas as camadas. **Fica dentro do scout**: ele filtra e devolve/registra só o que foi pedido.

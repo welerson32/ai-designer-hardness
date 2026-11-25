@@ -3,7 +3,8 @@
 O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aqui ficam:
 
 - **`pauta.mjs`** / **`cliente.mjs`** — pautas (nova, listar, vincular, saída, encerrar) e clientes (nova, listar, checar lacunas, concluir).
-- **`memoria.mjs`** — memória do designer (aprendizados de execução e por cliente) com busca vetorial local (modelo `multilingual-e5-small` em `vendor/memoria/`) + palavra-chave; fallback só palavra-chave.
+- **`aplicar.mjs`** — fala direto com o plugin pelo proxy (porta 3001): aplica lote comando a comando, detecta erro (inclusive `_obj:"error"` devolvido como sucesso), desfaz pelo snapshot, confere `expect` e devolve JSON enxuto, sem a árvore de camadas. Também `--receita`/`--tool` avulsas. Mapa tool → ação do plugin em `acoes-ps.json` (gerado do `ps-mcp.py` da versão travada).
+- **`memoria.mjs`** — memória do designer (aprendizados de execução e por cliente) com busca vetorial local (modelo `multilingual-e5-base` em `vendor/memoria/`) + palavra-chave; fallback só palavra-chave.
 - **`pecas.mjs`** — plano das peças da pauta (posts + stories, 1 PSD por peça, 1 prancheta por página), andamento e CTA.
 - **`geo.mjs`** — cálculo de layout determinístico (`center`, `align`, `move-to`, `grid`, `distribute`, `pranchetas`). `node scripts/geo.mjs` sem argumentos mostra o uso.
 - **`exportar.mjs`** — gera o lote que exporta uma imagem por prancheta da peça.
@@ -11,7 +12,7 @@ O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aq
 - **`preview.mjs`** — chamadas do preview barato (duplicar → recortar → ≤ 800px → capturar → fechar cópia). Uso exclusivo do `ps-art-director`.
 - **`recipes/`** — receitas batchPlay enviadas por `call_batch_play_command` (servidor `photoshop-bp`).
 
-Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `memoria`, `pecas`, `geo`, `exportar`, `recipe`, `preview`).
+Self-tests: `node scripts/<nome>.selftest.mjs` (`aplicar`, `cliente`, `pauta`, `memoria`, `pecas`, `geo`, `exportar`, `recipe`, `preview`).
 
 ## Formato de receita
 
@@ -54,4 +55,4 @@ Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `memoria`, `
 | `resize-artboard` | redimensionar prancheta (post → story) | não |
 | `delete-layer` | apagar camada/prancheta (story só-capa, na cópia) | sim |
 | `add-guide` | guia vertical/horizontal | não |
-| `create-group` | grupo de camadas | não |
+| ~~`create-group`~~ | removida: criava grupo vazio — usar a tool `group_layers` (`group_name`, `layer_ids`) | — |

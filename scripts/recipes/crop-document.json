@@ -1,21 +1,42 @@
 {
   "description": "Recorta o documento ativo ao retângulo (px). Destrutivo: usar só na cópia de preview.",
   "server": "photoshop-bp",
-  "params": { "left": "int", "top": "int", "right": "int", "bottom": "int" },
+  "params": {
+    "left": "int",
+    "top": "int",
+    "right": "int",
+    "bottom": "int"
+  },
   "commands": [
     {
       "_obj": "crop",
       "to": {
         "_obj": "rectangle",
-        "top": { "_unit": "pixelsUnit", "_value": "{{top}}" },
-        "left": { "_unit": "pixelsUnit", "_value": "{{left}}" },
-        "bottom": { "_unit": "pixelsUnit", "_value": "{{bottom}}" },
-        "right": { "_unit": "pixelsUnit", "_value": "{{right}}" }
+        "top": {
+          "_unit": "pixelsUnit",
+          "_value": "{{top}}"
+        },
+        "left": {
+          "_unit": "pixelsUnit",
+          "_value": "{{left}}"
+        },
+        "bottom": {
+          "_unit": "pixelsUnit",
+          "_value": "{{bottom}}"
+        },
+        "right": {
+          "_unit": "pixelsUnit",
+          "_value": "{{right}}"
+        }
       },
-      "angle": { "_unit": "angleUnit", "_value": 0 },
+      "angle": {
+        "_unit": "angleUnit",
+        "_value": 0
+      },
       "delete": true
     }
   ],
   "returns": "descriptor vazio",
-  "validated": false
+  "validated": false,
+  "notes": "Não recorta documento com pranchetas (no-op). Achatar antes (tool flatten_all_layers) — exportar.mjs já faz isso na cópia."
 }

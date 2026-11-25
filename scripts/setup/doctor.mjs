@@ -8,6 +8,7 @@ import {
   run, findUv, vendorCommit, photoshopAno, photoshopAberto, portaAberta, sondarPlugin, pythonPronto,
 } from './lib.mjs';
 import { lerServidores, testarServidor } from './mcp-check.mjs';
+import { MODELO as MEMORIA_MODELO } from '../memoria.mjs';
 
 const SONDA_MSG = {
   OK: 'plugin respondeu',
@@ -35,7 +36,7 @@ export async function diagnosticar({ sondar = true } = {}) {
   const py = existsSync(join(MCP_DIR, '.venv')) ? pythonPronto() : { ok: false, msg: 'ambiente Python do adb-mcp não criado' };
   r.push(item('python', py.ok, 'auto', py.msg));
   r.push(item('proxy-deps', existsSync(join(PROXY_DIR, 'node_modules', 'socket.io')), 'auto', 'dependências do proxy'));
-  r.push(item('memoria', existsSync(join(ROOT, 'vendor', 'memoria', 'node_modules', '@huggingface', 'transformers')) && existsSync(join(ROOT, 'vendor', 'memoria', 'modelos')), 'auto', 'memória do designer (modelo local)'));
+  r.push(item('memoria', existsSync(join(ROOT, 'vendor', 'memoria', 'node_modules', '@huggingface', 'transformers')) && existsSync(join(ROOT, 'vendor', 'memoria', 'modelos', ...MEMORIA_MODELO.split('/'))), 'auto', 'memória do designer (modelo local)'));
   r.push(item('workspace', existsSync(join(ROOT, 'workspace')), 'auto', 'pasta workspace/'));
 
   const ano = photoshopAno();

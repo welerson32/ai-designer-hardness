@@ -1,0 +1,608 @@
+{
+ "fonte": "mikechambers/adb-mcp mcp/ps-mcp.py @ afe5d09 (gerado; tools de imagem/generativas ficam no MCP)",
+ "tools": {
+  "set_active_document": {
+   "action": "setActiveDocument",
+   "options": {
+    "documentId": "document_id"
+   }
+  },
+  "get_documents": {
+   "action": "getDocuments",
+   "options": {}
+  },
+  "create_gradient_layer_style": {
+   "action": "createGradientLayerStyle",
+   "options": {
+    "layerId": "layer_id",
+    "angle": "angle",
+    "colorStops": "color_stops",
+    "type": "type",
+    "opacityStops": "opacity_stops"
+   }
+  },
+  "duplicate_document": {
+   "action": "duplicateDocument",
+   "options": {
+    "name": "document_name"
+   }
+  },
+  "create_document": {
+   "action": "createDocument",
+   "options": {
+    "name": "document_name",
+    "width": "width",
+    "height": "height",
+    "resolution": "resolution",
+    "fillColor": "fill_color",
+    "colorMode": "color_mode"
+   },
+   "defaults": {
+    "fill_color": {
+     "red": 0,
+     "green": 0,
+     "blue": 0
+    },
+    "color_mode": "RGB"
+   }
+  },
+  "save_document_as": {
+   "action": "saveDocumentAs",
+   "options": {
+    "filePath": "file_path",
+    "fileType": "file_type"
+   },
+   "defaults": {
+    "file_type": "PSD"
+   }
+  },
+  "save_document": {
+   "action": "saveDocument",
+   "options": {}
+  },
+  "group_layers": {
+   "action": "groupLayers",
+   "options": {
+    "groupName": "group_name",
+    "layerIds": "layer_ids"
+   }
+  },
+  "place_image": {
+   "action": "placeImage",
+   "options": {
+    "layerId": "layer_id",
+    "imagePath": "image_path"
+   }
+  },
+  "rename_layers": {
+   "action": "renameLayers",
+   "options": {
+    "layerData": "layer_data"
+   }
+  },
+  "scale_layer": {
+   "action": "scaleLayer",
+   "options": {
+    "layerId": "layer_id",
+    "width": "width",
+    "height": "height",
+    "anchorPosition": "anchor_position",
+    "interpolationMethod": "interpolation_method"
+   },
+   "defaults": {
+    "interpolation_method": "AUTOMATIC"
+   }
+  },
+  "rotate_layer": {
+   "action": "rotateLayer",
+   "options": {
+    "layerId": "layer_id",
+    "angle": "angle",
+    "anchorPosition": "anchor_position",
+    "interpolationMethod": "interpolation_method"
+   },
+   "defaults": {
+    "interpolation_method": "AUTOMATIC"
+   }
+  },
+  "flip_layer": {
+   "action": "flipLayer",
+   "options": {
+    "layerId": "layer_id",
+    "axis": "axis"
+   }
+  },
+  "delete_layer": {
+   "action": "deleteLayer",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "set_layer_visibility": {
+   "action": "setLayerVisibility",
+   "options": {
+    "layerId": "layer_id",
+    "visible": "visible"
+   }
+  },
+  "move_layer": {
+   "action": "moveLayer",
+   "options": {
+    "layerId": "layer_id",
+    "position": "position"
+   }
+  },
+  "get_document_info": {
+   "action": "getDocumentInfo",
+   "options": {}
+  },
+  "crop_document": {
+   "action": "cropDocument",
+   "options": {}
+  },
+  "paste_from_clipboard": {
+   "action": "pasteFromClipboard",
+   "options": {
+    "layerId": "layer_id",
+    "pasteInPlace": "paste_in_place"
+   },
+   "defaults": {
+    "paste_in_place": true
+   }
+  },
+  "rasterize_layer": {
+   "action": "rasterizeLayer",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "open_photoshop_file": {
+   "action": "openFile",
+   "options": {
+    "filePath": "file_path"
+   }
+  },
+  "cut_selection_to_clipboard": {
+   "action": "cutSelectionToClipboard",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "copy_merged_selection_to_clipboard": {
+   "action": "copyMergedSelectionToClipboard",
+   "options": {}
+  },
+  "copy_selection_to_clipboard": {
+   "action": "copySelectionToClipboard",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "select_subject": {
+   "action": "selectSubject",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "select_sky": {
+   "action": "selectSky",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "get_layer_bounds": {
+   "action": "getLayerBounds",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "remove_background": {
+   "action": "removeBackground",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "create_pixel_layer": {
+   "action": "createPixelLayer",
+   "options": {
+    "layerName": "layer_name",
+    "opacity": "opacity",
+    "fillNeutral": "fill_neutral",
+    "blendMode": "blend_mode"
+   },
+   "defaults": {
+    "opacity": 100,
+    "blend_mode": "NORMAL"
+   }
+  },
+  "create_multi_line_text_layer": {
+   "action": "createMultiLineTextLayer",
+   "options": {
+    "layerName": "layer_name",
+    "contents": "text",
+    "fontSize": "font_size",
+    "opacity": "opacity",
+    "position": "position",
+    "fontName": "postscript_font_name",
+    "textColor": "text_color",
+    "blendMode": "blend_mode",
+    "bounds": "bounds",
+    "justification": "justification"
+   },
+   "defaults": {
+    "opacity": 100,
+    "blend_mode": "NORMAL",
+    "text_color": {
+     "red": 255,
+     "green": 255,
+     "blue": 255
+    },
+    "position": {
+     "x": 100,
+     "y": 100
+    },
+    "bounds": {
+     "top": 0,
+     "left": 0,
+     "bottom": 250,
+     "right": 300
+    },
+    "justification": "LEFT"
+   }
+  },
+  "create_single_line_text_layer": {
+   "action": "createSingleLineTextLayer",
+   "options": {
+    "layerName": "layer_name",
+    "contents": "text",
+    "fontSize": "font_size",
+    "opacity": "opacity",
+    "position": "position",
+    "fontName": "postscript_font_name",
+    "textColor": "text_color",
+    "blendMode": "blend_mode"
+   },
+   "defaults": {
+    "opacity": 100,
+    "blend_mode": "NORMAL",
+    "text_color": {
+     "red": 255,
+     "green": 255,
+     "blue": 255
+    },
+    "position": {
+     "x": 100,
+     "y": 100
+    }
+   }
+  },
+  "edit_text_layer": {
+   "action": "editTextLayer",
+   "options": {
+    "layerId": "layer_id",
+    "contents": "text",
+    "fontSize": "font_size",
+    "fontName": "postscript_font_name",
+    "textColor": "text_color"
+   },
+   "defaults": {
+    "text": null,
+    "font_size": null,
+    "postscript_font_name": null,
+    "text_color": null
+   }
+  },
+  "translate_layer": {
+   "action": "translateLayer",
+   "options": {
+    "layerId": "layer_id",
+    "xOffset": "x_offset",
+    "yOffset": "y_offset"
+   },
+   "defaults": {
+    "x_offset": 0,
+    "y_offset": 0
+   }
+  },
+  "remove_layer_mask": {
+   "action": "removeLayerMask",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "add_layer_mask_from_selection": {
+   "action": "addLayerMask",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "set_layer_properties": {
+   "action": "setLayerProperties",
+   "options": {
+    "layerId": "layer_id",
+    "blendMode": "blend_mode",
+    "layerOpacity": "layer_opacity",
+    "fillOpacity": "fill_opacity",
+    "isClippingMask": "is_clipping_mask"
+   },
+   "defaults": {
+    "blend_mode": "NORMAL",
+    "layer_opacity": 100,
+    "fill_opacity": 100,
+    "is_clipping_mask": false
+   }
+  },
+  "fill_selection": {
+   "action": "fillSelection",
+   "options": {
+    "layerId": "layer_id",
+    "color": "color",
+    "blendMode": "blend_mode",
+    "opacity": "opacity"
+   },
+   "defaults": {
+    "color": {
+     "red": 255,
+     "green": 0,
+     "blue": 0
+    },
+    "blend_mode": "NORMAL",
+    "opacity": 100
+   }
+  },
+  "delete_selection": {
+   "action": "deleteSelection",
+   "options": {
+    "layerId": "layer_id"
+   }
+  },
+  "invert_selection": {
+   "action": "invertSelection",
+   "options": {}
+  },
+  "clear_selection": {
+   "action": "selectRectangle",
+   "options": {},
+   "fixed": {
+    "feather": 0,
+    "antiAlias": true,
+    "bounds": {
+     "top": 0,
+     "left": 0,
+     "bottom": 0,
+     "right": 0
+    }
+   }
+  },
+  "select_rectangle": {
+   "action": "selectRectangle",
+   "options": {
+    "layerId": "layer_id",
+    "feather": "feather",
+    "antiAlias": "anti_alias",
+    "bounds": "bounds"
+   },
+   "defaults": {
+    "feather": 0,
+    "anti_alias": true,
+    "bounds": {
+     "top": 0,
+     "left": 0,
+     "bottom": 100,
+     "right": 100
+    }
+   }
+  },
+  "select_polygon": {
+   "action": "selectPolygon",
+   "options": {
+    "layerId": "layer_id",
+    "feather": "feather",
+    "antiAlias": "anti_alias",
+    "points": "points"
+   },
+   "defaults": {
+    "feather": 0,
+    "anti_alias": true,
+    "points": [
+     {
+      "x": 50,
+      "y": 10
+     },
+     {
+      "x": 100,
+      "y": 90
+     },
+     {
+      "x": 10,
+      "y": 40
+     }
+    ]
+   }
+  },
+  "select_ellipse": {
+   "action": "selectEllipse",
+   "options": {
+    "layerId": "layer_id",
+    "feather": "feather",
+    "antiAlias": "anti_alias",
+    "bounds": "bounds"
+   },
+   "defaults": {
+    "feather": 0,
+    "anti_alias": true,
+    "bounds": {
+     "top": 0,
+     "left": 0,
+     "bottom": 100,
+     "right": 100
+    }
+   }
+  },
+  "align_content": {
+   "action": "alignContent",
+   "options": {
+    "layerId": "layer_id",
+    "alignmentMode": "alignment_mode"
+   }
+  },
+  "add_drop_shadow_layer_style": {
+   "action": "addDropShadowLayerStyle",
+   "options": {
+    "layerId": "layer_id",
+    "blendMode": "blend_mode",
+    "color": "color",
+    "opacity": "opacity",
+    "angle": "angle",
+    "distance": "distance",
+    "spread": "spread",
+    "size": "size"
+   },
+   "defaults": {
+    "blend_mode": "MULTIPLY",
+    "color": {
+     "red": 0,
+     "green": 0,
+     "blue": 0
+    },
+    "opacity": 35,
+    "angle": 160,
+    "distance": 3,
+    "spread": 0,
+    "size": 7
+   }
+  },
+  "duplicate_layer": {
+   "action": "duplicateLayer",
+   "options": {
+    "sourceLayerId": "layer_to_duplicate_id",
+    "duplicateLayerName": "duplicate_layer_name"
+   }
+  },
+  "flatten_all_layers": {
+   "action": "flattenAllLayers",
+   "options": {
+    "layerName": "layer_name"
+   }
+  },
+  "add_color_balance_adjustment_layer": {
+   "action": "addColorBalanceAdjustmentLayer",
+   "options": {
+    "layerId": "layer_id",
+    "highlights": "highlights",
+    "midtones": "midtones",
+    "shadows": "shadows"
+   },
+   "defaults": {
+    "highlights": [
+     0,
+     0,
+     0
+    ],
+    "midtones": [
+     0,
+     0,
+     0
+    ],
+    "shadows": [
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "add_brightness_contrast_adjustment_layer": {
+   "action": "addBrightnessContrastAdjustmentLayer",
+   "options": {
+    "layerId": "layer_id",
+    "brightness": "brightness",
+    "contrast": "contrast"
+   },
+   "defaults": {
+    "brightness": 0,
+    "contrast": 0
+   }
+  },
+  "add_stroke_layer_style": {
+   "action": "addStrokeLayerStyle",
+   "options": {
+    "layerId": "layer_id",
+    "size": "size",
+    "color": "color",
+    "opacity": "opacity",
+    "position": "position",
+    "blendMode": "blend_mode"
+   },
+   "defaults": {
+    "size": 2,
+    "color": {
+     "red": 0,
+     "green": 0,
+     "blue": 0
+    },
+    "opacity": 100,
+    "position": "CENTER",
+    "blend_mode": "NORMAL"
+   }
+  },
+  "add_vibrance_adjustment_layer": {
+   "action": "addAdjustmentLayerVibrance",
+   "options": {
+    "layerId": "layer_id",
+    "saturation": "saturation",
+    "vibrance": "vibrance"
+   },
+   "defaults": {
+    "vibrance": 0,
+    "saturation": 0
+   }
+  },
+  "add_black_and_white_adjustment_layer": {
+   "action": "addAdjustmentLayerBlackAndWhite",
+   "options": {
+    "layerId": "layer_id",
+    "colors": "colors",
+    "tint": "tint",
+    "tintColor": "tint_color"
+   },
+   "defaults": {
+    "colors": {
+     "blue": 20,
+     "cyan": 60,
+     "green": 40,
+     "magenta": 80,
+     "red": 40,
+     "yellow": 60
+    },
+    "tint": false,
+    "tint_color": {
+     "red": 225,
+     "green": 211,
+     "blue": 179
+    }
+   }
+  },
+  "apply_gaussian_blur": {
+   "action": "applyGaussianBlur",
+   "options": {
+    "layerId": "layer_id",
+    "radius": "radius"
+   },
+   "defaults": {
+    "radius": 2.5
+   }
+  },
+  "apply_motion_blur": {
+   "action": "applyMotionBlur",
+   "options": {
+    "layerId": "layer_id",
+    "angle": "angle",
+    "distance": "distance"
+   },
+   "defaults": {
+    "angle": 0,
+    "distance": 30
+   }
+  }
+ }
+}

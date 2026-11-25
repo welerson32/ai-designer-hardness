@@ -67,7 +67,7 @@ function gravarInjetados(root, sessionId, ids) {
 function relevantes(root, prompt, cliente, sessionId) {
   if (!fs.existsSync(path.join(root, 'workspace', 'memoria', 'aprendizados.jsonl'))) return '';
   const ja = sessionId ? lerInjetados(root, sessionId) : [];
-  const args = [path.join(root, 'scripts', 'memoria.mjs'), 'buscar', prompt.slice(0, 1500), '--sem-nucleo', '--k', '4', '--margem', '0.05', '--hook'];
+  const args = [path.join(root, 'scripts', 'memoria.mjs'), 'buscar', prompt.slice(0, 1500), '--sem-nucleo', '--k', '4', '--margem', '0.05', '--minimo', '--hook'];
   if (cliente) args.push('--cliente', cliente);
   if (ja.length) args.push('--excluir', ja.join(','));
   const r = spawnSync(process.execPath, args, { cwd: root, encoding: 'utf8', timeout: 12000, windowsHide: true });
