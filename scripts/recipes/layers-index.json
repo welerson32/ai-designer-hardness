@@ -15,5 +15,5 @@
   ],
   "returns": "{ list: [ { name, layerID, layerKind, boundsNoEffects: { left, top, right, bottom }, visible, parentLayerID } ] }",
   "notes": "layerKind é numérico: 1 pixel, 2 adjustment, 3 text, 4 vector, 5 smartObject, 6 video, 7 group, 8 3D, 9 gradient, 10 pattern, 11 solidColor, 12 background, 13 groupEnd. Conferir no primeiro uso.",
-  "validated": false
+  "validated": true
 }

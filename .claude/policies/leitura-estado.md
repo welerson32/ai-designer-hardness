@@ -52,4 +52,4 @@ Com `W,H` (canvas) e `b = {left,top,right,bottom}` da camada **sem efeitos**; `w
 - Grid de `n` colunas, gutter `g`, margem `m`: `col = (W - 2m - (n-1)·g)/n`; x da coluna `i` (base 0) = `m + i·(col + g)`
 - Arredondar para inteiro só no fim.
 
-`translate_layer(layer_id, x_offset, y_offset)` recebe **deslocamento**, não posição. A docstring do adb-mcp diz "positivo = sobe" no eixo Y — oposto ao sistema do Photoshop (Y cresce para baixo). **Validar o sinal no primeiro uso e registrar aqui.**
+`translate_layer(layer_id, x_offset, y_offset)` e a receita `move-layer` recebem **deslocamento**, não posição. **Y positivo desce** nos dois (validado no Photoshop em 2026-11-25; a docstring do adb-mcp, que diz "positivo = sobe", está errada).

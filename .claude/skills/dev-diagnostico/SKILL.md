@@ -87,4 +87,5 @@ Leia `vendor/adb-mcp/mcp/` (cliente socket usado por `ps-mcp.py`/`ps-batch-play.
 
 1. Feche documentos de teste sem salvar o que não for necessário; `pauta.mjs encerrar dev-teste`.
 2. Resumo no topo do relatório: o que bloqueia uso real, receitas que falharam, sinal do eixo Y, custo da sessão.
-3. Receitas validadas e a nota do eixo Y alteradas no repositório → mostre o `git diff` ao mantenedor; commit só se ele pedir.
+3. Receitas validadas e a nota do eixo Y alteradas no repositório → mostre o `git diff` ao mantenedor; commit só se ele pedir (inclua-as no mesmo commit do relatório).
+4. Para levar o relatório: copie para `docs/diagnosticos/<data>-diagnostico.md` **anonimizado** (clientes como cliente-A/B, sem caminhos pessoais nem conteúdo de dossiê) e faça commit — o repositório é público. O mantenedor remove o arquivo depois da análise.

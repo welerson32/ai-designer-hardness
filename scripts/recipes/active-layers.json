@@ -12,5 +12,5 @@
     }
   ],
   "returns": "{ targetLayersIDs: [ { _ref: 'layer', _id: <id> } ] }",
-  "validated": false
+  "validated": true
 }

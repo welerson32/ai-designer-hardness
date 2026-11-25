@@ -19,5 +19,5 @@
     }
   ],
   "returns": "descriptor do move (só o 1º comando é devolvido pelo MCP)",
-  "validated": false
+  "validated": true
 }

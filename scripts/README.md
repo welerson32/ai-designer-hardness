@@ -35,23 +35,23 @@ Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `memoria`, `
 
 | Receita | Uso | Validada |
 |---|---|---|
-| `active-layers` | IDs selecionados (leitura) | não |
-| `layers-index` | índice compacto — só `ps-scout` (leitura) | não |
-| `history-snapshot` | snapshot no início do lote (automático) | não |
-| `revert-snapshot` | rollback de lote | não |
-| `move-layer` | deslocar camada (dx, dy; dy+ = baixo) | não |
-| `rename-layer` | renomear | não |
-| `set-visibility` | mostrar/ocultar | não |
-| `set-opacity` | opacidade | não |
+| `active-layers` | IDs selecionados (leitura) | sim |
+| `layers-index` | índice compacto — só `ps-scout` (leitura) | sim |
+| `history-snapshot` | snapshot no início do lote (automático) | sim |
+| `revert-snapshot` | rollback de lote | sim |
+| `move-layer` | deslocar camada (dx, dy; dy+ = baixo) | sim |
+| `rename-layer` | renomear | sim |
+| `set-visibility` | mostrar/ocultar | sim |
+| `set-opacity` | opacidade | sim |
 | `play-action` | executar Action | não |
-| `layer-text` | estilo de texto da camada (estudo do guia de cliente) | não |
-| `duplicate-document` | cópia para preview | não |
+| `layer-text` | estilo de texto da camada (estudo do guia de cliente) | sim |
+| `duplicate-document` | cópia para preview | sim |
 | `crop-document` | recorte (só na cópia) | não |
-| `resize-image` | redução (só na cópia) | não |
-| `close-document` | fechar cópia por nome, sem salvar | não |
-| `select-document` | ativar documento pelo ID | não |
+| `resize-image` | redução (só na cópia) | sim |
+| `close-document` | fechar cópia por nome, sem salvar | sim |
+| `select-document` | ativar documento pelo ID | sim |
 | `create-artboard` | criar prancheta (uma por página) | não |
 | `resize-artboard` | redimensionar prancheta (post → story) | não |
-| `delete-layer` | apagar camada/prancheta (story só-capa, na cópia) | não |
+| `delete-layer` | apagar camada/prancheta (story só-capa, na cópia) | sim |
 | `add-guide` | guia vertical/horizontal | não |
 | `create-group` | grupo de camadas | não |
