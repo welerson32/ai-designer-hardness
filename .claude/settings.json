@@ -18,6 +18,7 @@
       "Bash(node scripts/setup/doctor.mjs:*)",
       "Bash(node scripts/setup/install.mjs:*)",
       "Bash(node scripts/memoria.mjs:*)",
+      "Bash(node scripts/aplicar.mjs:*)",
       "Bash(node .claude/hooks/session-handoff.cjs:*)",
       "Read(./workspace/**)",
       "Write(./workspace/**)",
