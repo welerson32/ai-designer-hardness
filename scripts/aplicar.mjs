@@ -22,10 +22,11 @@ export function comandoDaTool(nome, args = {}) {
     if (!(arg in valores)) throw new Error(`${nome}: parâmetro ausente "${arg}"`);
     options[opt] = valores[arg];
   }
-  return { application: APP, action: def.action, options };
+  return { application: APP, action: def.action, options, ...(def.falsoErro ? { falsoErro: def.falsoErro } : {}) };
 }
 
 const batchPlay = (descriptor) => ({ application: APP, action: 'executeBatchPlayCommand', options: { commands: [descriptor] } });
+const semMeta = ({ falsoErro, ...c }) => c;
 
 export function planejar(lote) {
   if (!lote?.name || !Array.isArray(lote.steps)) throw new Error('lote precisa de "name" e "steps"');
@@ -72,14 +73,20 @@ export function boundsDe(resposta) {
 export async function executarLote(lote, enviar, { conferirExpect = true } = {}) {
   const { passos, snapshot } = planejar(lote);
   let ultimo = null;
+  const avisos = [];
   for (let i = 0; i < passos.length; i++) {
     let pacote;
     try {
-      pacote = await enviar(passos[i].comando);
+      pacote = await enviar(semMeta(passos[i].comando));
     } catch (e) {
       pacote = { status: 'FAILURE', message: e.message };
     }
-    const erro = erroDoPacote(pacote);
+    let erro = erroDoPacote(pacote);
+    const { falsoErro } = passos[i].comando;
+    if (erro && falsoErro && new RegExp(falsoErro).test(erro)) {
+      avisos.push(`${passos[i].passo}: erro conhecido ignorado (${erro})`);
+      erro = null;
+    }
     if (erro) {
       let rollback = 'não necessário';
       if (snapshot && i > 0) {
@@ -94,7 +101,7 @@ export async function executarLote(lote, enviar, { conferirExpect = true } = {})
     }
     ultimo = pacote;
   }
-  const out = { status: 'OK', lote: lote.name, chamadas: `${passos.length}/${passos.length}`, doc: docCompacto(ultimo?.document) };
+  const out = { status: 'OK', lote: lote.name, chamadas: `${passos.length}/${passos.length}`, doc: docCompacto(ultimo?.document), ...(avisos.length ? { avisos } : {}) };
   if (conferirExpect && Array.isArray(lote.expect) && lote.expect.length) {
     out.expect = [];
     for (const e of lote.expect) {
@@ -166,9 +173,9 @@ if (isMain) {
       const respostas = [];
       let doc = null;
       for (const c of avulsos) {
-        const p = await conexao.enviar(c);
+        const p = await conexao.enviar(semMeta(c));
         const erro = erroDoPacote(p);
-        if (erro) throw new Error(erro);
+        if (erro && !(c.falsoErro && new RegExp(c.falsoErro).test(erro))) throw new Error(erro);
         respostas.push(enxugar(p.response));
         doc = docCompacto(p.document);
       }

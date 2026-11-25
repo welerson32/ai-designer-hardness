@@ -44,7 +44,8 @@
      "blue": 0
     },
     "color_mode": "RGB"
-   }
+   },
+   "falsoErro": "Cannot set properties of null (setting 'allLocked')"
   },
   "save_document_as": {
    "action": "saveDocumentAs",
@@ -72,7 +73,8 @@
    "options": {
     "layerId": "layer_id",
     "imagePath": "image_path"
-   }
+   },
+   "falsoErro": "rasterizeLayer : Could not find layerId"
   },
   "rename_layers": {
    "action": "renameLayers",

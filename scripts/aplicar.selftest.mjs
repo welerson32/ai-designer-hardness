@@ -57,4 +57,11 @@ assert.equal(r.rollback, 'não necessário');
 assert.equal(erroDoPacote({ status: 'FAILURE', message: 'x' }), 'x');
 assert.match(enxugar({ a: 'y'.repeat(5000) }), /caracteres\]$/);
 
+r = await executarLote({ name: 'p', steps: [{ tool: 'place_image', args: { layer_id: 3, image_path: 'x.png' } }] }, async (cmd) => {
+  assert.ok(!('falsoErro' in cmd), 'metadado não vai ao plugin');
+  return cmd.action === 'placeImage' ? { status: 'FAILURE', message: 'Error calling placeImage : rasterizeLayer : Could not find layerId : 4' } : ok();
+});
+assert.equal(r.status, 'OK');
+assert.equal(r.avisos.length, 1);
+
 console.log('aplicar: ok');

@@ -51,6 +51,10 @@ Tudo aqui via `node scripts/aplicar.mjs` (não pelo MCP). Receitas já validadas
 7. **Descriptors que faltam — gravar, não adivinhar:** para `resize-artboard` (prancheta 1080x1350 → 1080x1920 no painel Propriedades) e `add-guide`: grave uma Action fazendo a operação à mão, no painel Ações clique com o direito no passo → **Copiar como JavaScript**, cole no relatório e corrija a receita. Teste com `aplicar.mjs --receita` e marque `validated: true` só se conferir.
 8. **Exportação de carrossel** (agora achata a cópia antes de recortar): PSD com 3 pranchetas lado a lado → `exportar.mjs` + `aplicar.mjs` → 3 imagens com o conteúdo certo de cada folha?
 9. `play-action`: só se houver Action registrada em `actions/README.md`; senão PULADO.
+10. **Camada nova na prancheta certa (bloqueou o benchmark do post 04):** o plugin cria texto/pixel acima da camada **ativa**. Teste, com 3 pranchetas: (a) receita de `select` da camada-alvo dentro da folha-02 e depois `create_single_line_text_layer` — nasceu na folha-02?; (b) se não, grave uma Action arrastando uma camada para dentro de outra prancheta → **Copiar como JavaScript** → vire a receita `move-into-artboard` (`layerId`, `artboardId`) e valide. Registre qual caminho funciona.
+11. `place_image` e `create_document`: o `aplicar` ignora os erros conhecidos (`rasterizeLayer : Could not find layerId`, `allLocked`) e devolve em `avisos`. Confirme que a camada/documento existe mesmo.
+12. **Fontes do cliente instaladas?** O Photoshop troca fonte ausente sem erro (Altone virou MyriadPro). Crie um texto com cada fonte do `identidade.json` do cliente e leia com `layer-text`: o `fontPostScriptName` devolvido é o pedido? Registre as ausentes.
+13. Fechar o último documento aberto devolve erro mesmo fechando: confirme e, se for o caso, registre a mensagem exata (vira `falsoErro` da receita).
 
 ## 3. Fluxo real de uma peça
 
