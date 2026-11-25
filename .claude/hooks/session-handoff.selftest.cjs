@@ -82,6 +82,13 @@ try {
   assert.match(out, /id=70 "titulo-story" text bounds=reler/);
   assert.doesNotMatch(out, /nao-mostrar/);
 
+  write('workspace/metodo.md', '## Geral\n' + '- regra antiga\n'.repeat(600) + '- APRENDIZADO-MAIS-RECENTE');
+  write('workspace/clientes/acme/dossie.md', '# Dossiê\n' + 'x'.repeat(12000) + '\n## 9. Aprendizados\n- DOSSIE-RECENTE');
+  out = build(root, { session_id: 's1' });
+  assert.match(out, /APRENDIZADO-MAIS-RECENTE/);
+  assert.match(out, /DOSSIE-RECENTE/);
+  assert.match(out, /aviso: metodo\.md passou/);
+
   out = build(root, { session_id: 'outra' });
   assert.match(out, /Sessão sem pauta/);
 

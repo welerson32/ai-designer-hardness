@@ -11,22 +11,24 @@ Uma pauta = uma demanda de design = um handoff = **uma sessão**. O ID da sessã
 
 1. Pergunte, em linguagem de designer, o nome da pauta e o cliente (se houver).
 2. `node scripts/pauta.mjs nova --nome "<nome>" [--cliente "<cliente>"] --sessao <ID desta sessão>`
-3. Veja `clienteStatus` na saída: `inexistente` ou `em-cadastro` → explique que o cliente precisa ser cadastrado primeiro (skill `ps-cliente`, em conversa própria) e pergunte se quer fazer isso antes; `pronto` → siga.
-4. Peça a pauta recebida e colete (regras em `.claude/policies/pecas.md`):
+3. `node .claude/hooks/session-handoff.cjs --sessao <ID desta sessão>` → carrega método do designer e dossiê do cliente (com Aprendizados) nesta conversa. Obrigatório: o carregamento automático só acontece no início da conversa, antes de a pauta existir.
+4. Veja `clienteStatus` na saída do passo 2: `inexistente` ou `em-cadastro` → explique que o cliente precisa ser cadastrado primeiro (skill `ps-cliente`, em conversa própria) e pergunte se quer fazer isso antes; `pronto` → siga.
+5. Peça a pauta recebida e colete (regras em `.claude/policies/pecas.md`):
    - **quantos posts e de que tipo** — post único ou carrossel (quantas folhas) — e o formato;
    - **o story de cada post** — "feed inteiro" ou "só a capa com CTA" (e o texto do CTA). Pergunte post a post ou "todos iguais?"; nunca presuma;
    - **os textos**, página por página, e as características esperadas.
    Faltou algo essencial → pergunte antes de abrir o Photoshop.
-5. Grave `<pauta>/pedido-pecas.json` (`{"posts":[{"tipo":"unico|carrossel","paginas":N,"formato":"instagram-feed-retrato","stories":"feed|capa","cta":"..."}]}`) e rode `node scripts/pecas.mjs plano <slug> --pedido workspace/pautas/<slug>/pedido-pecas.json`.
-6. Confirme com o designer em linguagem de design, curto: "São 12 arquivos: 6 posts (2 carrosséis de 5 folhas, 4 únicos) e 6 stories (4 com o feed inteiro, 2 só com a capa e CTA). Confere?"
-7. Registre no **Briefing** do handoff: posts e stories e textos **literais** por peça e página. Preencha **Objetivo** e **Decisões de design** já passadas (formato base em `templates/formatos.json`; identidade = dossiê do cliente, que o hook já carrega).
-8. Diga onde vão ficar os arquivos: "Os PSDs e as imagens desta pauta vão para Documentos › AI Designer › <slug>."
+6. Grave `<pauta>/pedido-pecas.json` (`{"posts":[{"tipo":"unico|carrossel","paginas":N,"formato":"instagram-feed-retrato","stories":"feed|capa","cta":"..."}]}`) e rode `node scripts/pecas.mjs plano <slug> --pedido workspace/pautas/<slug>/pedido-pecas.json`.
+7. Confirme com o designer em linguagem de design, curto: "São 12 arquivos: 6 posts (2 carrosséis de 5 folhas, 4 únicos) e 6 stories (4 com o feed inteiro, 2 só com a capa e CTA). Confere?"
+8. Registre no **Briefing** do handoff: posts e stories e textos **literais** por peça e página. Preencha **Objetivo** e **Decisões de design** já passadas (formato base em `templates/formatos.json`; identidade = dossiê do cliente, carregado no passo 3).
+9. Diga onde vão ficar os arquivos: "Os PSDs e as imagens desta pauta vão para Documentos › AI Designer › <slug>."
 
 ## Retomar existente
 
 1. `node scripts/pauta.mjs listar` → mostre as pautas abertas pelo nome (não pelo slug).
 2. `node scripts/pauta.mjs vincular <slug> --sessao <ID desta sessão>`
-3. Leia o `handoff.md` da pauta e siga da **Próxima etapa**.
+3. `node .claude/hooks/session-handoff.cjs --sessao <ID desta sessão>` → carrega handoff, método do designer, dossiê do cliente (com Aprendizados) e estado. Obrigatório: sem isso, as correções que o designer já fez não chegam a esta conversa.
+4. Siga da **Próxima etapa** do handoff.
 
 ## Uma sessão = uma pauta
 

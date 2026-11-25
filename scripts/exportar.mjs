@@ -52,7 +52,7 @@ function parseArgs(argv) {
 }
 
 const USAGE = `uso: node scripts/exportar.mjs <slug> <peca> --doc <id do PSD da peça> [--tipo jpg|png]
-gera <pauta>/etapas/90-exportar-<peca>.json: uma imagem por prancheta, na pasta de saída (aplicar com ps-operator).`;
+gera <pauta>/etapas/90-exportar-<peca>.json: uma imagem por prancheta, na pasta de saída (aplicar direto, conforme a skill ps-plan).`;
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   try {

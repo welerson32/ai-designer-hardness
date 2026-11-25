@@ -1,5 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "sonnet",
+  "availableModels": ["sonnet", "haiku"],
   "outputStyle": "Designer",
   "enabledMcpjsonServers": ["photoshop", "photoshop-bp"],
   "permissions": {
@@ -15,6 +17,8 @@
       "Bash(node scripts/cliente.mjs:*)",
       "Bash(node scripts/setup/doctor.mjs:*)",
       "Bash(node scripts/setup/install.mjs:*)",
+      "Bash(node scripts/memoria.mjs:*)",
+      "Bash(node .claude/hooks/session-handoff.cjs:*)",
       "Read(./workspace/**)",
       "Write(./workspace/**)",
       "Edit(./workspace/**)"
@@ -36,14 +40,25 @@
     ]
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/aprendizado.cjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "startup|resume|clear",
         "hooks": [
           {
             "type": "command",
-            "command": "if command -v node >/dev/null 2>&1; then node \"${CLAUDE_PROJECT_DIR}/scripts/setup/doctor.mjs\" --hook; else echo '# Checagem do ambiente: Node ausente. Acione a skill ps-setup (instalar Node) antes de qualquer trabalho.'; fi",
-            "timeout": 45
+            "command": "if command -v node >/dev/null 2>&1; then node \"${CLAUDE_PROJECT_DIR}/scripts/setup/atualizar.mjs\" --hook; node \"${CLAUDE_PROJECT_DIR}/scripts/setup/doctor.mjs\" --hook; else echo '# Checagem do ambiente: Node ausente. Acione a skill ps-setup (instalar Node) antes de qualquer trabalho.'; fi",
+            "timeout": 90
           }
         ]
       },
@@ -52,8 +67,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-handoff.cjs\"",
-            "timeout": 10
+            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/memoria.mjs\" importar --sem-vetor --hook; node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-handoff.cjs\"",
+            "timeout": 20
           }
         ]
       }

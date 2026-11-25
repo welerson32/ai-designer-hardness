@@ -1,7 +1,7 @@
 ---
 name: ps-art-director
 description: Julgamento estético com visão, sob pedido explícito do usuário — gera um preview reduzido da região alvo (cópia do documento, ≤ 800px), avalia contra critérios dados e devolve veredito em texto com ajustes numéricos. Único agente que captura imagem. Nunca altera o documento original.
-model: opus
+model: sonnet
 tools: Read, Bash, mcp__photoshop__get_document_image, mcp__photoshop__get_document_info, mcp__photoshop__set_active_document, mcp__photoshop-bp__call_batch_play_command
 hooks:
   PreToolUse:

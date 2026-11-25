@@ -14,7 +14,7 @@ Público leigo em tecnologia: **faça tudo o que der sozinho**; guie só o que e
 ## 2. Reparo automático (`tipo: auto`)
 
 - Antes, uma linha: "Vou preparar a conexão com o Photoshop — leva alguns minutos e pode pedir sua aprovação algumas vezes."
-- `node scripts/setup/install.mjs tudo` (ou só os passos que falharam, na ordem: `uv`, `vendor`, `python`, `proxy-deps`, `plugin-pasta`, `workspace`, `proxy`).
+- `node scripts/setup/install.mjs tudo` (ou só os passos que falharam, na ordem: `uv`, `vendor`, `python`, `proxy-deps`, `plugin-pasta`, `workspace`, `memoria`, `proxy`).
 - **Node ausente** (o hook avisou que não conseguiu rodar): `winget install --id OpenJS.NodeJS.LTS -e --silent --accept-source-agreements --accept-package-agreements`, depois peça para a pessoa **fechar e abrir o Claude Code** e siga.
 - `uv` recém-instalado pode não estar no PATH da sessão — o script já procura nos locais padrão; se falhar, peça para reabrir o Claude Code.
 - **`mcp-photoshop` / `mcp-photoshop-bp` falhando** (a conexão do Claude com o Photoshop não sobe):

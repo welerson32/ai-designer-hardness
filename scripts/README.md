@@ -3,6 +3,7 @@
 O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aqui ficam:
 
 - **`pauta.mjs`** / **`cliente.mjs`** — pautas (nova, listar, vincular, saída, encerrar) e clientes (nova, listar, checar lacunas, concluir).
+- **`memoria.mjs`** — memória do designer (aprendizados de execução e por cliente) com busca vetorial local (modelo `multilingual-e5-small` em `vendor/memoria/`) + palavra-chave; fallback só palavra-chave.
 - **`pecas.mjs`** — plano das peças da pauta (posts + stories, 1 PSD por peça, 1 prancheta por página), andamento e CTA.
 - **`geo.mjs`** — cálculo de layout determinístico (`center`, `align`, `move-to`, `grid`, `distribute`, `pranchetas`). `node scripts/geo.mjs` sem argumentos mostra o uso.
 - **`exportar.mjs`** — gera o lote que exporta uma imagem por prancheta da peça.
@@ -10,7 +11,7 @@ O adb-mcp não executa arquivos de script (e `.jsx` não roda em plugin UXP). Aq
 - **`preview.mjs`** — chamadas do preview barato (duplicar → recortar → ≤ 800px → capturar → fechar cópia). Uso exclusivo do `ps-art-director`.
 - **`recipes/`** — receitas batchPlay enviadas por `call_batch_play_command` (servidor `photoshop-bp`).
 
-Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `pecas`, `geo`, `exportar`, `recipe`, `preview`).
+Self-tests: `node scripts/<nome>.selftest.mjs` (`cliente`, `pauta`, `memoria`, `pecas`, `geo`, `exportar`, `recipe`, `preview`).
 
 ## Formato de receita
 

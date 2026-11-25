@@ -54,14 +54,14 @@ O story nasce **do post aprovado**, nunca do zero:
 
 Como adaptar a arte ao story (fundo, reposição do conteúdo, zona segura) e outros "jeitos de fazer" **são ensinados pelo designer**:
 
-- Antes de adaptar, procure o método em `workspace/metodo.md` e nos **Aprendizados** do dossiê do cliente (o hook já carrega os dois).
+- Antes de adaptar: `node scripts/memoria.mjs buscar "adaptar <post> para story: fundo, conteúdo, zona segura" --cliente <slug>`.
 - Não achou → pergunte ao designer como ele faz. Não invente.
-- Ensinou → registre na hora: vale para o cliente → **Aprendizados** do dossiê; vale para o trabalho dele em geral → `workspace/metodo.md` (seção por assunto, frases curtas e operacionais). Confirme numa linha: "Anotado, faço assim daqui pra frente."
+- Ensinou → `memoria.mjs registrar` na hora (`--escopo cliente:<slug>` se vale só para o cliente; `execucao` se é o jeito dele em geral), com a fala literal. Confirme numa linha: "Anotado, faço assim daqui pra frente."
 - Nunca pergunte de novo o que já está registrado.
 
 ## Entrega
 
 - PSD de cada peça na pasta de saída da pauta (`save_document_as`, tipo `PSD`).
-- **Uma imagem por prancheta:** `node scripts/exportar.mjs <slug> <peca> --doc <doc.id> [--tipo jpg|png]` → lote em `<pauta>/etapas/90-exportar-<peca>.json`, aplicado pelo `ps-operator`. Nomes: `post-01.jpg` (página única), `post-01-folha-02.jpg`, `story-01-tela-03.jpg`. O PSD não é alterado.
+- **Uma imagem por prancheta:** `node scripts/exportar.mjs <slug> <peca> --doc <doc.id> [--tipo jpg|png]` → lote em `<pauta>/etapas/90-exportar-<peca>.json`, aplicado conforme a skill `ps-plan`. Nomes: `post-01.jpg` (página única), `post-01-folha-02.jpg`, `story-01-tela-03.jpg`. O PSD não é alterado.
 - Formato padrão `jpg`; `png` se o designer pedir.
 - Ao terminar cada peça: `status … exportada`. Ao terminar a pauta, diga onde estão: "Os 12 PSDs e as imagens estão em Documentos › AI Designer › <pasta>."

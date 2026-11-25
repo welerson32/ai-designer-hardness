@@ -27,7 +27,7 @@ Pasta: `workspace/clientes/<slug>/` → `cliente.json` (status), `dossie.md` (o 
 
 ## Aprendizados (durante pautas)
 
-Preferência nova do cliente ("não gosta de fundo escuro", "logo sempre no canto inferior") → pergunte se vale para todas as pautas do cliente. Se sim, acrescente em **9. Aprendizados** (`AAAA-MM-DD <pauta>: <aprendizado>`) e ajuste a seção afetada. Mantenha o dossiê dentro do limite: consolide em vez de só acumular.
+Preferência ou correção do designer sobre o cliente ("não gosta de fundo escuro", "logo sempre no canto inferior") → **registre na hora**, sem esperar confirmação, na memória: `node scripts/memoria.mjs registrar --escopo cliente:<slug> --tipo preferencia|regra --texto "..." --fala "..." --termos "..."`. Se mudar algo das seções 1–8 (paleta, tipografia, logo…), ajuste também o dossiê. A seção **9. Aprendizados** do dossiê é legado: não escreva mais nela (o que já está lá foi importado para a memória). Se o designer disser depois que era só desta pauta, `registrar --substitui` não serve: anote nas Decisões de design do handoff e avise o mantenedor.
 
 ## Regras
 

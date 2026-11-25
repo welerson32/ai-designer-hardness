@@ -27,3 +27,8 @@ O Creative Cloud só aceita pacote gerado pelo **UXP Developer Tool** (zip comum
 - `.mcp.json`: `uv run --directory vendor/adb-mcp/mcp --no-sync` com o ambiente criado por `uv sync --no-install-project`.
 - Painel do plugin carregado na abertura do Photoshop com **Connect on Launch** marcado (se o painel não abrir sozinho, a conexão não acontece).
 - Receitas em `scripts/recipes/` (`validated: false`).
+
+## Modo desenvolvedor
+
+- `/dev-diagnostico` — diagnóstico ponta a ponta numa máquina com Photoshop (ambiente, trava de modelo, todas as receitas, fluxo de uma peça, custo). Não é acionado pelo Claude sozinho; gera `workspace/dev/diagnostico-<data>.md`.
+- `node scripts/dev/uso.mjs [--sessao <id>]` — tokens por modelo (sessão + subagentes), agentes, ferramentas e duração da sessão.

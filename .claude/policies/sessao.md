@@ -32,7 +32,7 @@ Não sugira compactar no meio de uma etapa, nem mais de uma vez por etapa.
 
 ## Subagentes
 
-- **Reconhecimento sempre fora da thread principal** (`ps-scout`, Haiku): achar camada por nome/tipo, mapear pasta de assets, reler posição. A thread principal recebe só o resumo.
-- **Paralelo só para leitura:** vários `ps-scout` ao mesmo tempo podem. Escrita no documento: um agente por vez.
-- **Prompt de subagente completo:** objetivo, pasta da pauta (`workspace/pautas/<slug>`), IDs/nomes, critérios, formato de saída. O subagente não vê a conversa.
-- **Não dispare subagente para 1–2 chamadas simples** — a partida dele custa mais que a tarefa.
+- **`ps-scout` só para busca por nome/tipo** (índice de camadas, que é grande) e mapeamento de pasta de assets. Uma chamada com todas as consultas da etapa.
+- **Não dispare subagente para 1–2 chamadas simples** (canvas, seleção ativa, aplicar lote) — a partida dele custa mais que a tarefa.
+- **Prompt de subagente completo:** objetivo, pasta da pauta (`workspace/pautas/<slug>`), peça, nomes, formato de saída. O subagente não vê a conversa.
+- Escrita no documento: só a thread principal.

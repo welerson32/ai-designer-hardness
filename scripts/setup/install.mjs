@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { LIB_VERSAO as MEMORIA_LIB } from '../memoria.mjs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ROOT, LOCK, VENDOR, MCP_DIR, PROXY_DIR, UPIA, run, findUv, vendorCommit, portaAberta, pythonPronto } from './lib.mjs';
@@ -45,6 +46,17 @@ const PASSOS = {
     return resultado('python', py.ok, py.msg);
   },
 
+  memoria() {
+    const dir = join(ROOT, 'vendor', 'memoria');
+    mkdirSync(dir, { recursive: true });
+    if (!existsSync(join(dir, 'package.json'))) writeFileSync(join(dir, 'package.json'), '{"name":"memoria-deps","private":true}
+');
+    run('npm', ['install', `@huggingface/transformers@${MEMORIA_LIB}`, '--save-exact', '--no-audit', '--no-fund'], { ...LONGO, cwd: dir, shell: true });
+    const ok = run(process.execPath, [join(ROOT, 'scripts', 'memoria.mjs'), 'aquecer'], LONGO) !== null;
+    if (ok) run(process.execPath, [join(ROOT, 'scripts', 'memoria.mjs'), 'reindexar'], LONGO);
+    return resultado('memoria', ok, ok ? 'memória do designer pronta (modelo local)' : 'falhou ao preparar a memória (busca segue por palavra-chave)');
+  },
+
   'proxy-deps'() {
     const out = run('npm', ['install', '--omit=dev', '--no-audit', '--no-fund'], { ...LONGO, cwd: PROXY_DIR, shell: true });
     return resultado('proxy-deps', out !== null && existsSync(join(PROXY_DIR, 'node_modules', 'socket.io')), 'dependências do proxy');
@@ -76,7 +88,7 @@ const PASSOS = {
   },
 };
 
-const ORDEM = ['uv', 'vendor', 'python', 'proxy-deps', 'plugin-pasta', 'workspace', 'proxy'];
+const ORDEM = ['uv', 'vendor', 'python', 'proxy-deps', 'plugin-pasta', 'workspace', 'memoria', 'proxy'];
 
 export async function instalar(passos) {
   const lista = passos.includes('tudo') ? ORDEM : passos;

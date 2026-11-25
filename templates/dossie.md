@@ -44,7 +44,7 @@
 - PENDENTE (referência: `templates/formatos.json`)
 
 ## 9. Aprendizados das pautas
-- (nenhum ainda — formato: `AAAA-MM-DD <pauta>: <aprendizado>`)
+- (ficam na memória do designer: `node scripts/memoria.mjs listar --cliente <slug>`)
 
 ## 10. Fontes deste dossiê
 - Do designer: PENDENTE
