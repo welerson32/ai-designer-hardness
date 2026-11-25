@@ -3,15 +3,14 @@
 ## 1. Sem dump de camadas
 
 - `mcp__photoshop__get_layers` é **negado** em `.claude/settings.json` (devolve a árvore inteira, com estilo de texto).
-- Leitura: canvas (`aplicar.mjs --tool get_document_info`) e seleção (`aplicar.mjs --receita active-layers`) a thread principal lê direto; busca por nome/tipo só pelo `ps-scout`:
-  - tool `get_document_info` — canvas em px e resolução.
-  - receita `active-layers` — IDs selecionados.
-  - receita `layers-index` — índice compacto (nome, id, tipo, bounds sem efeitos, visível) de todas as camadas. **Fica dentro do scout**: ele filtra e devolve/registra só o que foi pedido.
-- O mentor pede ao scout por nome exato, tipo (`layerKind`) ou seleção ativa. Nunca "me lista tudo".
+- Toda leitura pela thread principal, via `node scripts/aplicar.mjs` (resposta sem a árvore de camadas):
+  - `--tool get_document_info '{}'` — canvas em px e resolução;
+  - `--receita active-layers` — IDs selecionados;
+  - `--camadas nome=<exato> tipo=<texto|pixel|grupo|smartObject|corSolida|fundo> prancheta=<id>` — o script lê o índice inteiro e devolve **só** as camadas que casam (id, nome, tipo, pai, visível, bounds). Junte o que precisa numa busca; nunca sem filtro em documento grande.
 
 ## 2. Cache `<pauta>/estado.json`
 
-Na pasta da pauta (`workspace/pautas/<slug>/`, ignorada pelo git). Escrito pelo `ps-scout`; atualizado pelo mentor após escrita de efeito previsível. **Uma entrada por peça** (cada peça é um PSD); `ativa` = peça em que se está trabalhando.
+Na pasta da pauta (`workspace/pautas/<slug>/`, ignorada pelo git). Escrito pela thread principal a partir das leituras e dos lotes (`expect` / `real`). **Uma entrada por peça** (cada peça é um PSD); `ativa` = peça em que se está trabalhando.
 
 ```json
 {
@@ -39,7 +38,7 @@ Validade:
 - `id`, `name`, `kind`, `parentId` e canvas → confiáveis enquanto o documento for o mesmo.
 - `bounds` → confiável só até a próxima escrita na camada:
   - escrita previsível (`translate_layer`, `move_layer`): o mentor **recalcula** localmente e atualiza o cache, sem reler;
-  - escrita imprevisível (texto editado, escala com efeitos, generativo, `select_subject`): `bounds: null`; releitura pelo scout só quando precisar.
+  - escrita imprevisível (texto editado, escala com efeitos, generativo, `select_subject`): `bounds: null`; releitura (`aplicar.mjs --camadas`) só quando precisar.
 - Usuário avisou que mexeu no arquivo → descartar `active` e todos os `bounds`.
 
 ## 3. Cálculo local

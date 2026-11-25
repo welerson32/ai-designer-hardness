@@ -10,7 +10,7 @@ Quem decide, planeja e aplica é você (thread principal). Script faz conta e tr
 ## Passos
 
 0. **Memória:** `node scripts/memoria.mjs buscar "<peça + etapa + elementos envolvidos>" --cliente <slug>` e siga à risca o que vier (junto com o núcleo da sessão). O plano não pode contrariar aprendizado registrado.
-1. IDs/bounds no `<pauta>/estado.json`. Faltou nome/tipo de camada → `ps-scout` (todas as consultas da etapa numa chamada só). Canvas ou seleção ativa → `node scripts/aplicar.mjs --tool get_document_info '{}'` / `--receita active-layers`.
+1. IDs/bounds no `<pauta>/estado.json`. Faltou camada → `node scripts/aplicar.mjs --camadas nome=… tipo=… prancheta=…` (uma busca com tudo da etapa). Canvas ou seleção ativa → `node scripts/aplicar.mjs --tool get_document_info '{}'` / `--receita active-layers`.
 2. Conta → `node scripts/geo.mjs` (`center`, `align`, `move-to`, `grid`, `distribute`, `pranchetas`). Nunca conta de cabeça.
 3. Escreva `<pauta>/etapas/<NN-nome>.json` com **todas** as alterações da etapa:
 
@@ -38,4 +38,6 @@ Quem decide, planeja e aplica é você (thread principal). Script faz conta e tr
 - Um escritor por vez no documento.
 - Sem receita para o que precisa → crie em `scripts/recipes/` (`validated: false`), não inline. Receita `validated: false` só com o designer avisado; agrupar camadas = tool `group_layers`.
 - Fluxo estável e repetitivo → Action nativa (`actions/README.md`), gravada sem diálogos modais; depois dela, `bounds: null` no que foi afetado.
+- **Camada nova nasce acima/dentro da camada ativa:** antes de criar texto/pixel/imagem numa prancheta, passo `select-layer` com o id da prancheta (ou de uma camada dela).
+- **Texto em relação a outro texto** (ex.: subtítulo 24px abaixo do título): a altura real do texto só existe depois de criado. Crie num lote, leia o `real` devolvido e posicione no lote seguinte.
 - Camadas: nomes kebab-case, ajustes do Claude no grupo `claude/`, nunca apagar original (ocultar).

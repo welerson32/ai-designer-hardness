@@ -45,7 +45,7 @@
     },
     "color_mode": "RGB"
    },
-   "falsoErro": "Cannot set properties of null \\(setting 'allLocked'\\)"
+   "falsoErro": "Cannot set properties of null (setting 'allLocked')"
   },
   "save_document_as": {
    "action": "saveDocumentAs",

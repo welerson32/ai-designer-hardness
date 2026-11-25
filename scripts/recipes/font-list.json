@@ -1,0 +1,22 @@
+{
+  "description": "Lista de fontes instaladas (nomes e PostScript). Resposta grande: use só via aplicar.mjs --fontes, que devolve apenas as ausentes.",
+  "server": "photoshop-bp",
+  "params": {},
+  "commands": [
+    {
+      "_obj": "get",
+      "_target": [
+        {
+          "_property": "fontList"
+        },
+        {
+          "_ref": "application",
+          "_enum": "ordinal",
+          "_value": "targetEnum"
+        }
+      ]
+    }
+  ],
+  "returns": "{ fontList: { fontName: [...], fontPostScriptName: [...] } }",
+  "validated": false
+}

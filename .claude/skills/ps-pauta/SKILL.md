@@ -18,6 +18,7 @@ Uma pauta = uma demanda de design = um handoff = **uma sessão**. O ID da sessã
    - **o story de cada post** — "feed inteiro" ou "só a capa com CTA" (e o texto do CTA). Pergunte post a post ou "todos iguais?"; nunca presuma;
    - **os textos**, página por página, e as características esperadas.
    Faltou algo essencial → pergunte antes de abrir o Photoshop.
+   **Fontes:** com o Photoshop aberto, `node scripts/aplicar.mjs --fontes nomes=<PostScript das fontes do identidade.json do cliente>`. Faltou alguma → avise o designer antes de montar ("A fonte Altone não está instalada neste computador; sem ela o Photoshop troca por outra sem avisar.") e espere ele instalar ou decidir.
 6. Grave `<pauta>/pedido-pecas.json` (`{"posts":[{"tipo":"unico|carrossel","paginas":N,"formato":"instagram-feed-retrato","stories":"feed|capa","cta":"..."}]}`) e rode `node scripts/pecas.mjs plano <slug> --pedido workspace/pautas/<slug>/pedido-pecas.json`.
 7. Confirme com o designer em linguagem de design, curto: "São 12 arquivos: 6 posts (2 carrosséis de 5 folhas, 4 únicos) e 6 stories (4 com o feed inteiro, 2 só com a capa e CTA). Confere?"
 8. Registre no **Briefing** do handoff: posts e stories e textos **literais** por peça e página. Preencha **Objetivo** e **Decisões de design** já passadas (formato base em `templates/formatos.json`; identidade = dossiê do cliente, carregado no passo 3).
@@ -28,7 +29,8 @@ Uma pauta = uma demanda de design = um handoff = **uma sessão**. O ID da sessã
 1. `node scripts/pauta.mjs listar` → mostre as pautas abertas pelo nome (não pelo slug).
 2. `node scripts/pauta.mjs vincular <slug> --sessao <ID desta sessão>`
 3. `node .claude/hooks/session-handoff.cjs --sessao <ID desta sessão>` → carrega handoff, método do designer, dossiê do cliente (com Aprendizados) e estado. Obrigatório: sem isso, as correções que o designer já fez não chegam a esta conversa.
-4. Siga da **Próxima etapa** do handoff.
+4. Mesma checagem de **fontes** do cliente (passo 5 de "Abrir nova").
+5. Siga da **Próxima etapa** do handoff.
 
 ## Uma sessão = uma pauta
 

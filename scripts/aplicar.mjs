@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { render } from './recipe.mjs';
+import { render, loadRecipe } from './recipe.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PROXY_URL = 'http://localhost:3001';
@@ -28,6 +28,28 @@ export function comandoDaTool(nome, args = {}) {
 const batchPlay = (descriptor) => ({ application: APP, action: 'executeBatchPlayCommand', options: { commands: [descriptor] } });
 const semMeta = ({ falsoErro, ...c }) => c;
 
+export function comandosDaReceita(nome, params = {}) {
+  const { falsoErro } = loadRecipe(nome);
+  return render(nome, params).map((d) => ({ ...batchPlay(d), ...(falsoErro ? { falsoErro } : {}) }));
+}
+
+const TIPOS = { 1: 'pixel', 2: 'ajuste', 3: 'texto', 4: 'vetor', 5: 'smartObject', 6: 'video', 7: 'grupo', 9: 'gradiente', 10: 'padrao', 11: 'corSolida', 12: 'fundo' };
+const TIPO_ALIAS = { text: 'texto', group: 'grupo', solidColor: 'corSolida', background: 'fundo', adjustment: 'ajuste', vector: 'vetor' };
+
+export function filtrarCamadas(lista, { nome, tipo, prancheta } = {}) {
+  const t = tipo ? TIPO_ALIAS[tipo] ?? tipo : null;
+  return (Array.isArray(lista) ? lista : [])
+    .filter((l) => l.layerKind !== 13)
+    .map((l) => ({ id: l.layerID, nome: l.name, tipo: TIPOS[l.layerKind] ?? String(l.layerKind), pai: l.parentLayerID ?? null, visivel: l.visible !== false, bounds: boundsDe(l) }))
+    .filter((l) => (!nome || l.nome === nome) && (!t || l.tipo === t) && (prancheta === undefined || l.pai === Number(prancheta)));
+}
+
+export function fontesFaltando(resposta, pedidas) {
+  const fl = resposta?.fontList ?? resposta;
+  const nomes = new Set([...(fl?.fontPostScriptName ?? []), ...(fl?.fontName ?? [])].map((n) => String(n).toLowerCase()));
+  return pedidas.filter((f) => !nomes.has(String(f).toLowerCase()));
+}
+
 export function planejar(lote) {
   if (!lote?.name || !Array.isArray(lote.steps)) throw new Error('lote precisa de "name" e "steps"');
   const passos = [];
@@ -35,7 +57,7 @@ export function planejar(lote) {
   if (snapshot) for (const c of render('history-snapshot', { name: snapshot })) passos.push({ passo: 'snapshot', comando: batchPlay(c) });
   lote.steps.forEach((s, i) => {
     const rotulo = `${i + 1}:${s.recipe ?? s.tool}`;
-    if (s.recipe) for (const c of render(s.recipe, s.params ?? {})) passos.push({ passo: rotulo, comando: batchPlay(c) });
+    if (s.recipe) for (const c of comandosDaReceita(s.recipe, s.params ?? {})) passos.push({ passo: rotulo, comando: c });
     else if (s.tool) passos.push({ passo: rotulo, comando: comandoDaTool(s.tool, s.args ?? {}) });
     else throw new Error(`step ${i + 1}: precisa de "recipe" ou "tool"`);
   });
@@ -83,7 +105,7 @@ export async function executarLote(lote, enviar, { conferirExpect = true } = {})
     }
     let erro = erroDoPacote(pacote);
     const { falsoErro } = passos[i].comando;
-    if (erro && falsoErro && new RegExp(falsoErro).test(erro)) {
+    if (erro && falsoErro && erro.includes(falsoErro)) {
       avisos.push(`${passos[i].passo}: erro conhecido ignorado (${erro})`);
       erro = null;
     }
@@ -154,6 +176,10 @@ const USAGE = `uso:
       aplica o lote comando a comando, para no 1º erro, desfaz pelo snapshot e confere o expect
   node scripts/aplicar.mjs --receita <nome> k=v ...     uma receita avulsa (leitura ou escrita), devolve a resposta
   node scripts/aplicar.mjs --tool <nome> '<args json>'  uma tool avulsa (ex.: get_document_info '{}')
+  node scripts/aplicar.mjs --camadas [nome=<exato>] [tipo=texto|pixel|grupo|smartObject|corSolida|fundo] [prancheta=<id>]
+      busca camadas e devolve só as que casam (id, nome, tipo, pai, visível, bounds)
+  node scripts/aplicar.mjs --fontes nomes=<PostScript1>,<PostScript2>   fontes que NÃO estão instaladas
+  [--max N] corta respostas avulsas em N caracteres (padrão: completa, sem a árvore de camadas)
 saída: JSON enxuto — nunca a árvore de camadas que o Photoshop anexa a cada resposta.`;
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
@@ -165,9 +191,19 @@ if (isMain) {
   try {
     if (!argv.length || argv[0] === '-h' || argv[0] === '--help') throw new Error(USAGE);
     let saida;
-    if (argv[0] === '--receita' || argv[0] === '--tool') {
+    if (argv[0] === '--camadas' || argv[0] === '--fontes') {
+      const kv = parseKv(argv.slice(1).filter((a, i, l) => !a.startsWith('--') && !l[i - 1]?.startsWith('--timeout')));
+      conexao = await conectar({ timeout });
+      const receita = argv[0] === '--camadas' ? 'layers-index' : 'font-list';
+      const p = await conexao.enviar(semMeta(comandosDaReceita(receita)[0]));
+      const erro = erroDoPacote(p);
+      if (erro) throw new Error(erro);
+      saida = argv[0] === '--camadas'
+        ? { status: 'OK', camadas: filtrarCamadas(p.response?.list, kv), doc: docCompacto(p.document) }
+        : { status: 'OK', faltando: fontesFaltando(p.response, String(kv.nomes ?? '').split(',').map((x) => x.trim()).filter(Boolean)) };
+    } else if (argv[0] === '--receita' || argv[0] === '--tool') {
       const avulsos = argv[0] === '--receita'
-        ? render(argv[1], parseKv(argv.slice(2).filter((a, i, l) => a !== '--timeout' && l[i - 1] !== '--timeout'))).map(batchPlay)
+        ? comandosDaReceita(argv[1], parseKv(argv.slice(2).filter((a, i, l) => a !== '--timeout' && l[i - 1] !== '--timeout')))
         : [comandoDaTool(argv[1], JSON.parse(argv[2] ?? '{}'))];
       conexao = await conectar({ timeout });
       const respostas = [];
@@ -175,8 +211,8 @@ if (isMain) {
       for (const c of avulsos) {
         const p = await conexao.enviar(semMeta(c));
         const erro = erroDoPacote(p);
-        if (erro && !(c.falsoErro && new RegExp(c.falsoErro).test(erro))) throw new Error(erro);
-        respostas.push(enxugar(p.response));
+        if (erro && !(c.falsoErro && erro.includes(c.falsoErro))) throw new Error(erro);
+        respostas.push(argv.includes('--max') ? enxugar(p.response, Number(argv[argv.indexOf('--max') + 1])) : p.response);
         doc = docCompacto(p.document);
       }
       saida = { status: 'OK', resposta: respostas.length === 1 ? respostas[0] : respostas, doc };

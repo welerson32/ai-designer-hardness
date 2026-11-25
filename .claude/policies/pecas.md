@@ -31,7 +31,7 @@ Andamento por peça: `node scripts/pecas.mjs status <slug> <peca> pendente|monta
 Dados da peça: `node scripts/pecas.mjs ver <slug> <post-NN>` (canvas, `frame` e `conteudo` de cada prancheta).
 
 1. tool `create_document` com o tamanho de **uma página** (`W`×`H`). Pode voltar erro `allLocked` mesmo criando o documento, e o nome não é aplicado (fica "Sem Título-N"; o nome vem no `save_document_as`) — confira com `aplicar.mjs --tool get_documents '{}'` antes de repetir;
-2. receita `create-artboard` para cada prancheta (`nome`, `frame`) — **ainda não validada** na versão nova; confira nome e se o fundo ficou fora da prancheta;
+2. receita `create-artboard` para cada prancheta (`nome`, `frame`) — **ainda não validada** na versão nova; validada: a **1ª prancheta engole o Plano de Fundo** como "Camada 0" — logo depois dela, `aplicar.mjs --camadas nome="Camada 0"` e `delete-layer` nesse id; as seguintes nascem na raiz;
 3. registre no `estado.json` a peça, o `doc.id` e o ID de cada prancheta (`aplicar.mjs --receita active-layers` logo após criar cada uma);
 4. salvar já como `<saida>/<post-NN>.psd`.
 

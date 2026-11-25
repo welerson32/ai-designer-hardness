@@ -32,7 +32,7 @@ Não sugira compactar no meio de uma etapa, nem mais de uma vez por etapa.
 
 ## Subagentes
 
-- **`ps-scout` só para busca por nome/tipo** (índice de camadas, que é grande) e mapeamento de pasta de assets. Uma chamada com todas as consultas da etapa.
+- Leitura do documento e mapeamento de pastas: thread principal (`aplicar.mjs --camadas`, Glob). Subagente só o `ps-art-director`, a pedido.
 - **Não dispare subagente para 1–2 chamadas simples** (canvas, seleção ativa, aplicar lote) — a partida dele custa mais que a tarefa.
 - **Prompt de subagente completo:** objetivo, pasta da pauta (`workspace/pautas/<slug>`), peça, nomes, formato de saída. O subagente não vê a conversa.
 - Escrita no documento: só a thread principal.

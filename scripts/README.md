@@ -37,7 +37,10 @@ Self-tests: `node scripts/<nome>.selftest.mjs` (`aplicar`, `cliente`, `pauta`, `
 | Receita | Uso | Validada |
 |---|---|---|
 | `active-layers` | IDs selecionados (leitura) | sim |
-| `layers-index` | índice compacto — só `ps-scout` (leitura) | sim |
+| `font-list` | fontes instaladas — use `aplicar.mjs --fontes` | não |
+| `select-layer` | ativa camada/prancheta (camada nova nasce nela) | sim |
+| `deselect` | remove a seleção (substitui a tool `clear_selection`, que falha) | sim |
+| `layers-index` | índice compacto — use `aplicar.mjs --camadas` (filtra antes de devolver) | sim |
 | `history-snapshot` | snapshot no início do lote (automático) | sim |
 | `revert-snapshot` | rollback de lote | sim |
 | `move-layer` | deslocar camada (dx, dy; dy+ = baixo) | sim |

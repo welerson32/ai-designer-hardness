@@ -9,78 +9,49 @@ disable-model-invocation: true
 Quem pediu é o **mantenedor**, não o designer. Durante este fluxo:
 
 - Ignore o output style `Designer` e o modo caveman: fale técnico, mostre comandos, IDs, descriptors e erros crus.
-- Não abra pauta real nem toque em cliente real. Tudo numa pauta descartável `dev-teste`, sem cliente.
-- Registre tudo em `workspace/dev/diagnostico-<AAAA-MM-DD>.md` (seções abaixo, uma linha por item: `OK | FALHA | PULADO — detalhe`). Esse arquivo é o que o mantenedor leva de volta.
-- Falha num item → registre a mensagem exata do Photoshop/MCP e siga para o próximo, a menos que bloqueie o resto.
+- Não abra pauta real nem altere cliente real. Tudo numa pauta descartável `dev-teste`.
+- Registre tudo em `workspace/dev/diagnostico-<AAAA-MM-DD>.md` (uma linha por item: `OK | FALHA | PULADO — detalhe`).
+- Falha num item → registre a mensagem exata e siga, a menos que bloqueie o resto.
+- Toda conversa com o Photoshop via `node scripts/aplicar.mjs` (não pelo MCP), salvo onde indicado.
 
 ## 0. Ambiente
 
-1. `git log --oneline -1` (versão do harness) e `claude --version`.
-2. `node scripts/setup/doctor.mjs` → registre a saída. Problema `[auto]` → `node scripts/setup/install.mjs` e repita. Problema `[guiado]` → resolva com o mantenedor.
-3. Self-tests: `node scripts/<nome>.selftest.mjs` para cada script e `node .claude/hooks/<nome>.selftest.cjs` para cada hook.
-4. `/mcp`: `photoshop` e `photoshop-bp` conectados. Photoshop aberto com o painel do plugin em "Connected".
-5. **Modelo:** confirme que esta sessão roda em Sonnet (o modelo atual aparece no contexto/`/status`). Peça ao mantenedor para tentar `/model opus` e registre se `availableModels` bloqueou ou não. Não bloqueou → registre "trava só por padrão, `availableModels` não vale em settings de projeto".
-6. Hook de retomada: a injeção do `SessionStart` apareceu no contexto? Registre o tamanho aproximado (linhas).
+1. `git log --oneline -1`; `node scripts/setup/atualizar.mjs`; `node scripts/setup/doctor.mjs` (problema `[auto]` → `node scripts/setup/install.mjs tudo`).
+2. Self-tests: todos os `scripts/*.selftest.mjs`, `scripts/setup/*.selftest.mjs` e `.claude/hooks/*.selftest.cjs`.
+3. **Com o mantenedor:** `/mcp` (photoshop e photoshop-bp conectados), `/model opus` (a trava `availableModels` bloqueou?), `/context` (peso de system prompt, CLAUDE.md, ferramentas MCP, skills — principal suspeito do custo fixo por requisição).
 
-## 0.1 Atualização e memória
+## 1. Memória
 
-1. `node scripts/setup/atualizar.mjs` → status (`em-dia`, `atualizado`, `alteracoes-locais`, `offline`…). `alteracoes-locais` → registre os arquivos; não descarte nada.
-2. **Memória do designer (só leitura, nunca altere):** existe `workspace/metodo.md`? Quantos caracteres? Para cada `workspace/clientes/*/dossie.md`: tamanho e quantas linhas na seção Aprendizados. Registre só números, não o conteúdo.
-3. `workspace/sessoes.json`: quantas sessões vinculadas por pauta. Muitas pautas com 1 sessão só e designer trabalhando vários dias = retomada sem vínculo (o dossiê não era carregado).
-4. `echo '{"prompt":"já te falei que o logo fica embaixo"}' | node .claude/hooks/aprendizado.cjs` → deve imprimir o lembrete.
-5. **Memória vetorial:** `node scripts/memoria.mjs importar` (idempotente) → quantos itens vieram de `metodo.md` e de cada dossiê; confira por amostra que o texto importado é idêntico ao original. `node scripts/memoria.mjs aquecer` (modelo local baixado?) e `node scripts/memoria.selftest.mjs` (inclui teste com o modelo real).
-6. Três buscas reais com perguntas do dia a dia do designer (ex.: "como adapto o carrossel para story", "onde vai o logo") com `buscar ... --cliente <slug>` → o aprendizado certo veio em 1º? Registre consulta, top-3 e scores. Errou → anote quais `--termos` faltaram.
-7. `node .claude/hooks/session-handoff.cjs --sessao <id de uma sessão vinculada>` → núcleo, dossiê e handoff aparecem inteiros? Tempo do hook de mensagem: `time (echo '{"prompt":"como adapto o post para story?"}' | node .claude/hooks/aprendizado.cjs)`.
+1. `node scripts/memoria.mjs importar` (idempotente) e `aquecer`.
+2. `echo '{"prompt":"já te falei que o logo fica embaixo"}' | node .claude/hooks/aprendizado.cjs` → lembrete.
+3. Calibração: 5 perguntas **com** resposta e 3 **sem**, `node scripts/memoria.mjs buscar "<pergunta>" --cliente <slug> --k 3`. Registre o `cos` do item certo e o maior `cos` das sem resposta. Corte atual `MIN_COS = 0.815` (rodada 3: certo mínimo 0,796, sem resposta máximo 0,799).
 
-## 1. Leitura
+## 2. Leitura e pendências do script
 
-1. `get_documents` e `get_document_info` direto (sem scout).
-2. `node scripts/pauta.mjs nova --nome "dev-teste" --sessao <ID desta sessão>`; `pauta.mjs saida dev-teste` → pasta de saída.
-3. Pedido: 1 post `unico` `instagram-feed-retrato` + story `capa` com CTA "Saiba mais". Grave em `workspace/pautas/dev-teste/pedido-pecas.json` e rode `pecas.mjs plano`.
+1. `aplicar.mjs --tool get_document_info '{}'` → tamanho da saída.
+2. **Busca de camadas sem agente:** doc com 3 pranchetas e ~10 camadas → `aplicar.mjs --camadas tipo=texto`, `--camadas nome=<exato>`, `--camadas prancheta=<id>`. Confere com o Painel Camadas? Tempo de cada (antes: ~13 s com subagente).
+3. **Fontes:** `aplicar.mjs --fontes nomes=Raleway-Regular,Altone-Bold,<outras do identidade.json>` → `faltando` bate com o que está instalado? (receita `font-list`, `validated: false`).
+4. **Fechar o último documento:** lote com `close-document` → `OK` com `avisos` (erro falso conhecido)?
+5. **1ª prancheta engole o fundo:** lote `create_document` → `create-artboard` → `aplicar.mjs --camadas nome="Camada 0"` → `delete-layer` → fundo sumiu e a prancheta ficou limpa?
+6. **Gravar, não adivinhar** (precisa do mantenedor no Photoshop): `resize-artboard` (prancheta 1080x1350 → 1080x1920 no painel Propriedades) e `add-guide`. Grave uma Action fazendo à mão → painel Ações, botão direito no passo → **Copiar como JavaScript** → cole no relatório, corrija a receita, teste com `aplicar.mjs --receita` e marque `validated: true` só se conferir.
 
-## 2. Aplicação por script e receitas pendentes
+## 3. Fluxo real de uma peça (medir)
 
-Tudo aqui via `node scripts/aplicar.mjs` (não pelo MCP). Receitas já validadas (`validated: true`) não precisam ser retestadas.
+Siga `ps-plan` como no uso diário (memória → `geo.mjs` → lote → `aplicar.mjs`):
 
-1. `aplicar.mjs --tool get_documents '{}'` e `--tool get_document_info '{}'` → conecta? A saída vem sem árvore de camadas? Registre o tamanho da saída (caracteres).
-2. `create_document` 1080x1350 via lote de 1 passo → registre se o erro `allLocked` ainda aparece e se o `aplicar` trata como `ERRO` (o documento é criado mesmo assim).
-3. **`create-artboard` (versão nova):** lote com o frame de `pecas.mjs ver <slug> post-01`. Confira: nome aplicado? Fundo ficou fora da prancheta? Outra prancheta lado a lado (frame da folha-02) também?
-4. **`group_layers`** (tool, substitui a receita removida `create-group`) com 2 camadas de texto → grupo contém as duas?
-5. **Erro detectado:** lote com `rename-layer` em `layerId` inexistente no meio → `status: ERRO`, `rollback: feito`, documento igual ao de antes?
-6. **`expect`:** lote com `move-layer` e `expect` certo → `OK`; com `expect` errado de propósito → `OK_COM_DIVERGENCIA` com o `real`.
-7. **Descriptors que faltam — gravar, não adivinhar:** para `resize-artboard` (prancheta 1080x1350 → 1080x1920 no painel Propriedades) e `add-guide`: grave uma Action fazendo a operação à mão, no painel Ações clique com o direito no passo → **Copiar como JavaScript**, cole no relatório e corrija a receita. Teste com `aplicar.mjs --receita` e marque `validated: true` só se conferir.
-8. **Exportação de carrossel** (agora achata a cópia antes de recortar): PSD com 3 pranchetas lado a lado → `exportar.mjs` + `aplicar.mjs` → 3 imagens com o conteúdo certo de cada folha?
-9. `play-action`: só se houver Action registrada em `actions/README.md`; senão PULADO.
-10. **Camada nova na prancheta certa (bloqueou o benchmark do post 04):** o plugin cria texto/pixel acima da camada **ativa**. Teste, com 3 pranchetas: (a) receita de `select` da camada-alvo dentro da folha-02 e depois `create_single_line_text_layer` — nasceu na folha-02?; (b) se não, grave uma Action arrastando uma camada para dentro de outra prancheta → **Copiar como JavaScript** → vire a receita `move-into-artboard` (`layerId`, `artboardId`) e valide. Registre qual caminho funciona.
-11. `place_image` e `create_document`: o `aplicar` ignora os erros conhecidos (`rasterizeLayer : Could not find layerId`, `allLocked`) e devolve em `avisos`. Confirme que a camada/documento existe mesmo.
-12. **Fontes do cliente instaladas?** O Photoshop troca fonte ausente sem erro (Altone virou MyriadPro). Crie um texto com cada fonte do `identidade.json` do cliente e leia com `layer-text`: o `fontPostScriptName` devolvido é o pedido? Registre as ausentes.
-13. Fechar o último documento aberto devolve erro mesmo fechando: confirme e, se for o caso, registre a mensagem exata (vira `falsoErro` da receita).
+1. Carrossel de 3 folhas: pranchetas, fundo, título e subtítulo em cada folha (`select-layer` na prancheta antes de criar cada texto). Subtítulo em 2 lotes (criar → ler `real` → posicionar).
+2. `ps-art-director` numa folha ("título legível e centralizado").
+3. Exportar (`exportar.mjs` + `aplicar.mjs`).
+4. Story a partir do post: se o item 2.6 corrigiu `resize-artboard`, completo; senão registre onde parou.
+5. Telas de aprovação: quantas e em quais ferramentas.
 
-## 3. Fluxo real de uma peça
+## 4. Custo
 
-Agora como no uso diário, para medir: siga a skill `ps-plan` (memória → `geo.mjs` → lote → `aplicar.mjs`).
+`node scripts/dev/uso.mjs` → requisições, cache read e tempo. Compare com a rodada 3 (57 req, 6,2M cache read, ~109k por requisição) e com o benchmark do post 04 (~243k por requisição).
 
-1. Etapa "layout": título centralizado na prancheta com margem 90px, subtítulo 24px abaixo, um retângulo/forma de fundo. Um lote só, uma chamada de `aplicar.mjs`.
-2. `expect` conferido pelo próprio `aplicar` → bateu?
-3. Compare com a rodada anterior: chamadas de ferramenta e tokens da etapa (seção 4).
-4. `ps-scout`: peça duas buscas (nome exato + tipo `text`) numa chamada. Registre tempo e se o `batchplay-guard` deixou passar só `get`/`multiGet`.
-5. `ps-art-director`: preview da prancheta com o critério "título legível e centralizado". Registre se a cópia `claude-preview` foi fechada e se o guard barrou algo.
-6. Exportação: `node scripts/exportar.mjs dev-teste post-01 --doc <id>` e aplique. Confira os arquivos na pasta de saída.
-7. Story a partir do post (seção "Montagem de um story" em `.claude/policies/pecas.md`) até salvar `story-01.psd`.
+## 5. Fechamento
 
-## 4. Custo e tempo
-
-1. `node scripts/dev/uso.mjs` → cole a saída no relatório (tokens por modelo, agentes, ferramentas, duração).
-2. `/context` → registre o peso de system prompt, CLAUDE.md, ferramentas MCP e skills.
-3. Anote quantas telas de aprovação apareceram e em quais ferramentas (candidatas a liberar no `settings.json`).
-
-## 5. Calibrar a memória
-
-Com os clientes reais importados: 5 perguntas que **têm** resposta na memória e 3 que **não têm** (ex.: "onde vai o logo" num cliente sem aprendizado de logo), cada uma com `node scripts/memoria.mjs buscar "<pergunta>" --cliente <slug> --k 3`. Registre o `cos` do item certo e o maior `cos` das perguntas sem resposta. O corte do hook é `MIN_COS = 0.815` em `scripts/memoria.mjs`: ajuste se os números pedirem.
-
-## 6. Fechamento
-
-1. Feche documentos de teste sem salvar o que não for necessário; `pauta.mjs encerrar dev-teste`.
-2. Resumo no topo do relatório: o que bloqueia uso real, receitas que falharam, sinal do eixo Y, custo da sessão.
-3. Receitas validadas e a nota do eixo Y alteradas no repositório → mostre o `git diff` ao mantenedor; commit só se ele pedir (inclua-as no mesmo commit do relatório).
-4. Para levar o relatório: copie para `docs/diagnosticos/<data>-diagnostico.md` **anonimizado** (clientes como cliente-A/B, sem caminhos pessoais nem conteúdo de dossiê) e faça commit — o repositório é público. O mantenedor remove o arquivo depois da análise.
+1. Documentos de teste fechados; `pauta.mjs encerrar <slug da dev-teste>`.
+2. Resumo no topo do relatório: o que bloqueia uso real, o que mudou de custo, receitas que falharam.
+3. Receitas corrigidas/validadas → no mesmo commit do relatório.
+4. Relatório em `docs/diagnosticos/<data>-diagnostico.md` **anonimizado** (clientes como cliente-A/B, sem caminhos pessoais nem conteúdo de dossiê) → commit **e push** (o repositório é público; o mantenedor remove depois da análise).

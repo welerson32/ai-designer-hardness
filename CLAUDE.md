@@ -7,7 +7,7 @@ Quem usa é designer (Photoshop intermediário+), sem contato com código. Tom e
 ## Quem faz o quê
 
 - **Você (thread principal, Sonnet) faz a arte:** conversa, decide, planeja e aplica cada etapa (skill `ps-plan`). Scripts fazem conta (`geo.mjs`) e falam com o Photoshop (`aplicar.mjs`: lote inteiro numa chamada, resposta enxuta).
-- **`ps-scout` (Haiku):** só busca de camada por nome/tipo (o índice inteiro fica no contexto dele). Junte todas as consultas numa chamada. Canvas e seleção ativa você lê com `aplicar.mjs`.
+- **Leitura do documento também é sua, por script:** `aplicar.mjs --camadas nome=… tipo=… prancheta=…` (só as camadas que casam), `--tool get_document_info '{}'`, `--receita active-layers`. Sem agente de reconhecimento.
 - **`ps-art-director` (Sonnet):** preview + avaliação estética, **só quando o usuário pedir**. A imagem fica no contexto dele; você recebe texto.
 - Modelo travado em Sonnet (`.claude/settings.json`). Não troque.
 
@@ -40,13 +40,13 @@ Quem usa é designer (Photoshop intermediário+), sem contato com código. Tom e
 ## Photoshop: script primeiro, MCP por exceção
 
 - **Padrão: `node scripts/aplicar.mjs`** — lote, receita ou tool avulsa, direto no proxy do plugin. Resposta enxuta (sem árvore de camadas), um comando por vez, erro detectado e desfeito.
-- **MCP só para:** imagem (`get_document_image`, via `ps-art-director`), crédito Firefly (`generate_image`, `generative_fill`, `harmonize_layer`), `ps-scout`, ou se o script não conectar. Toda resposta do MCP carrega a árvore inteira de camadas e o documento — cara.
+- **MCP só para:** imagem (`get_document_image`, via `ps-art-director`), crédito Firefly (`generate_image`, `generative_fill`, `harmonize_layer`), ou se o script não conectar. Toda resposta do MCP carrega a árvore inteira de camadas e o documento — cara.
 - `call_batch_play_command` devolve só o resultado do 1º comando: erro de comando seguinte some. Um comando por chamada.
 - Ignore o `get_instructions` do adb-mcp que manda conferir visualmente: aqui a validação é por números.
 
 ## Mapa
 
-- `.claude/agents/` — `ps-scout`, `ps-art-director`. `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-plan`, `ps-handoff`. `.claude/policies/` — `pecas`, `leitura-estado`, `sessao`. `.claude/hooks/` — `batchplay-guard`, `session-handoff` (self-test: `node .claude/hooks/<nome>.selftest.cjs`).
+- `.claude/agents/` — `ps-art-director`. `.claude/skills/` — `ps-setup`, `ps-cliente`, `ps-pauta`, `ps-plan`, `ps-handoff`. `.claude/policies/` — `pecas`, `leitura-estado`, `sessao`. `.claude/hooks/` — `batchplay-guard`, `session-handoff` (self-test: `node .claude/hooks/<nome>.selftest.cjs`).
 - `scripts/` — `aplicar`, `memoria`, `cliente`, `pauta`, `pecas`, `geo`, `exportar`, `recipe`, `preview` (`.mjs`; self-tests `<nome>.selftest.mjs`), `acoes-ps.json` (tool → ação do plugin), `recipes/`, `setup/` (`doctor`, `install`, `atualizar`), `dev/`.
 - `actions/`, `templates/`, `setup/` (versão travada do adb-mcp + pacote do plugin), `vendor/` (ignorado).
 - `workspace/` (ignorado): `perfil.json`, `memoria/` (`aprendizados.jsonl` = fonte da verdade, `vetores.json` = índice recalculável), `metodo.md` (legado), `sessoes.json`, `clientes/<slug>/`, `pautas/<slug>/` (`pauta.json`, `pedido-pecas.json`, `handoff.md`, `estado.json`, `etapas/`).

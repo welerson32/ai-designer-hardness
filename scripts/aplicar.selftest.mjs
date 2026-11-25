@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { comandoDaTool, planejar, executarLote, erroDoPacote, enxugar } from './aplicar.mjs';
+import { comandoDaTool, planejar, executarLote, erroDoPacote, enxugar, filtrarCamadas, fontesFaltando, comandosDaReceita } from './aplicar.mjs';
 
 const c = comandoDaTool('translate_layer', { layer_id: 12, y_offset: 40 });
 assert.deepEqual(c, { application: 'photoshop', action: 'translateLayer', options: { layerId: 12, xOffset: 0, yOffset: 40 } });
@@ -63,5 +63,21 @@ r = await executarLote({ name: 'p', steps: [{ tool: 'place_image', args: { layer
 });
 assert.equal(r.status, 'OK');
 assert.equal(r.avisos.length, 1);
+
+const indice = [
+  { name: 'folha-01', layerID: 5, layerKind: 7, parentLayerID: -1, visible: true, boundsNoEffects: { left: 0, top: 0, right: 1080, bottom: 1350 } },
+  { name: 'titulo', layerID: 12, layerKind: 3, parentLayerID: 5, visible: true, boundsNoEffects: { left: { _value: 90 }, top: 120, right: 990, bottom: 260 } },
+  { name: 'titulo', layerID: 22, layerKind: 3, parentLayerID: 9, visible: false, boundsNoEffects: { left: 1270, top: 120, right: 2170, bottom: 260 } },
+  { name: '</Layer group>', layerID: 6, layerKind: 13, parentLayerID: 5 },
+];
+assert.deepEqual(filtrarCamadas(indice, { nome: 'titulo', prancheta: 5 }), [{ id: 12, nome: 'titulo', tipo: 'texto', pai: 5, visivel: true, bounds: { left: 90, top: 120, right: 990, bottom: 260 } }]);
+assert.equal(filtrarCamadas(indice, { tipo: 'text' }).length, 2);
+assert.equal(filtrarCamadas(indice, {}).length, 3, 'groupEnd fica de fora');
+assert.deepEqual(fontesFaltando({ fontList: { fontName: ['Raleway'], fontPostScriptName: ['Raleway-Regular'] } }, ['Raleway-Regular', 'Altone-Bold']), ['Altone-Bold']);
+
+const fechar = comandosDaReceita('close-document', { name: 'x' });
+r = await executarLote({ name: 'f', snapshot: false, steps: [{ recipe: 'close-document', params: { name: 'x' } }] }, async () => ({ status: 'FAILURE', message: "Error calling executeBatchPlayCommand : Cannot read properties of null (reading 'name')" }));
+assert.ok(fechar[0].falsoErro);
+assert.equal(r.status, 'OK', 'falsoErro de receita');
 
 console.log('aplicar: ok');
