@@ -49,8 +49,7 @@ const PASSOS = {
   memoria() {
     const dir = join(ROOT, 'vendor', 'memoria');
     mkdirSync(dir, { recursive: true });
-    if (!existsSync(join(dir, 'package.json'))) writeFileSync(join(dir, 'package.json'), '{"name":"memoria-deps","private":true}
-');
+    if (!existsSync(join(dir, 'package.json'))) writeFileSync(join(dir, 'package.json'), '{"name":"memoria-deps","private":true}\n');
     run('npm', ['install', `@huggingface/transformers@${MEMORIA_LIB}`, '--save-exact', '--no-audit', '--no-fund'], { ...LONGO, cwd: dir, shell: true });
     const ok = run(process.execPath, [join(ROOT, 'scripts', 'memoria.mjs'), 'aquecer'], LONGO) !== null;
     if (ok) run(process.execPath, [join(ROOT, 'scripts', 'memoria.mjs'), 'reindexar'], LONGO);
